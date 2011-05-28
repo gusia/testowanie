@@ -9,5 +9,5 @@ public class JakasKlasa {
 	public int getProperty() {
 		return property;
 	}
-	//a
+	//ciebie
 }
