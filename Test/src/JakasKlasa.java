@@ -1,7 +1,7 @@
 
 public class JakasKlasa {
 	private int property;
-
+//b
 	public void setProperty(int property) {
 		this.property = property;
 	}
