@@ -1,15 +1,15 @@
 package pl.edu.uj.ii.goofy;
 
-import org.jgrapht.demo.JGraphAdapterDemo;
+
 
 public class Main {
 
 	/**
-	 * @param args
+	 * @param args	
 	 */
 	public static void main(String[] args) {
-		System.out.println("Hello Goofy!");
+		//JGraphTestInterface test = new EdgeColorTest();
+		//test.go();
 		JGraphAdapterDemo.main(args);
 	}
-
 }
