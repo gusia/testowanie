@@ -1,4 +1,4 @@
-/.metadata
+#/.metadata
 #/.metadata/*/.projects
 #!/.metadata/.plugins/org.eclipse.core.resources/.projects/*
 /*/bin

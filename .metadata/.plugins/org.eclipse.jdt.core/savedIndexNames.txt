@@ -1,0 +1,13 @@
+INDEX VERSION 1.126+/home/gumik/UJ/4/Testowanie/projekt/.metadata/.plugins/org.eclipse.jdt.core
+2949514502.index
+2033636524.index
+2077112433.index
+2868887939.index
+2174617174.index
+146969668.index
+2071154719.index
+2065756554.index
+1477270952.index
+1402991720.index
+300943055.index
+3703194086.index
