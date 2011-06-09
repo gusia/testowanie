@@ -1,2 +1,7 @@
-.metadata
+/.metadata
+#/.metadata/*/.projects
+#!/.metadata/.plugins/org.eclipse.core.resources/.projects/*
 /*/bin
+#/a/*
+#/a/2
+#!1
