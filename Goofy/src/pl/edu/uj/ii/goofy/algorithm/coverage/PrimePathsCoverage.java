@@ -1,5 +1,6 @@
 package pl.edu.uj.ii.goofy.algorithm.coverage;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -9,34 +10,34 @@ public class PrimePathsCoverage<N, E> implements TestRequirementInt<N, E> {
 
 	@Override
 	public List<List<N>> getRequirement(Graph<N, E> graph) {
-		List<List<N>> tmpList = new EdgeCoverage<N, E>().getRequirement(graph);
-		List<List<N>> edgePaths = new LinkedList<List<N>>();
+		List<List<N>> tmpList = new LinkedList<List<N>>();
+		List<List<N>> edgePaths = new NodeCoverage<N, E>().getRequirement(graph);
 		LinkedList<List<N>> paths = new LinkedList<List<N>>();
-		
-		for (List<N> path : tmpList) {
-			if (path.size() != 1) {
-				edgePaths.add(path);
-			}
-		}
-		tmpList.clear();
-		
+				
 		while (!edgePaths.isEmpty()) {
 			for (List<N> path : edgePaths) {
+				N first = path.get(0);
 				N last = path.get(path.size() - 1);
+				Collection<N> successors = graph.getSuccessors(last);
 				
-				if (path.get(0) == last
-					|| graph.getSuccessorCount(last) == 0) {
-					
+				if (successors.size() == 0) {
 					paths.add(path);
-				} else {
-					for (N succ : graph.getSuccessors(last)) {
-						if (!path.contains(succ) || path.get(0) == succ) {
-							LinkedList<N> newPath = new LinkedList<N>(path);
-							newPath.add(succ);
-							tmpList.add(newPath);
-						}
+				}
+				
+				for (N succ : successors) {
+					if (first == succ) {
+						LinkedList<N> newPath = new LinkedList<N>(path);
+						newPath.add(succ);
+						paths.add(newPath);
+					} else if (path.contains(succ)) {
+						paths.add(path);
+					} else {
+						LinkedList<N> newPath = new LinkedList<N>(path);
+						newPath.add(succ);
+						tmpList.add(newPath);
 					}
 				}
+				
 			}
 			
 			edgePaths = tmpList;
@@ -46,8 +47,11 @@ public class PrimePathsCoverage<N, E> implements TestRequirementInt<N, E> {
 		LinkedList<List<N>> primePaths = new LinkedList<List<N>>();
 		
 		for (List<N> p1 : paths) {
-			boolean ok = true;
+			if (p1.size() == 1) {
+				continue;
+			}
 			
+			boolean ok = true;
 			for (List<N> p2 : paths) {
 				if (p1 != p2 && isSubPath(p2, p1)) { 
 					ok = false;

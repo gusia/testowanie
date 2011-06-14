@@ -23,14 +23,14 @@ public class Test {
 		graph.addVertex(6);
 		
 		graph.addEdge(1, 0, 1);
-		graph.addEdge(2, 0, 4);
-		graph.addEdge(3, 1, 2);
-		graph.addEdge(4, 1, 5);
-		graph.addEdge(5, 2, 3);
-		graph.addEdge(6, 3, 1);
-		graph.addEdge(7, 4, 4);
-		graph.addEdge(8, 4, 6);
-		graph.addEdge(9, 5, 6);
+		graph.addEdge(2, 1, 2);
+		graph.addEdge(3, 2, 1);
+		graph.addEdge(4, 2, 0);
+//		graph.addEdge(5, 4, 5);
+//		graph.addEdge(6, 5, 6);
+//		graph.addEdge(7, 6, 0);
+//		graph.addEdge(8, 4, 6);
+//		graph.addEdge(9, 5, 6);
 		
 		
 		List<List<Integer>> paths = new PrimePathsCoverage<Integer, Integer>().getRequirement(graph);
