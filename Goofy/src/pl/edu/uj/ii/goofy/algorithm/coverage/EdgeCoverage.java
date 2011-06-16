@@ -2,7 +2,6 @@ package pl.edu.uj.ii.goofy.algorithm.coverage;
 
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.List;
 
 import edu.uci.ics.jung.graph.Graph;
 

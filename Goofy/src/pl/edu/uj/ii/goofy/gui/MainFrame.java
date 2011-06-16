@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -16,9 +17,19 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import net.miginfocom.swing.MigLayout;
 import pl.edu.uj.ii.goofy.EdgeIdGenerator;
+import pl.edu.uj.ii.goofy.MultiMap;
+import pl.edu.uj.ii.goofy.algorithm.coverage.EdgeCoverage;
+import pl.edu.uj.ii.goofy.algorithm.coverage.EdgePairCoverage;
+import pl.edu.uj.ii.goofy.algorithm.coverage.NodeCoverage;
+import pl.edu.uj.ii.goofy.algorithm.coverage.PrimePathsCoverage;
+import pl.edu.uj.ii.goofy.algorithm.coverage.TestRequirementInt;
+import pl.edu.uj.ii.goofy.algorithm.testpaths.TestPathGenerator;
+import pl.edu.uj.ii.goofy.algorithm.testpaths.Touring;
 import edu.uci.ics.jung.algorithms.layout.FRLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
@@ -26,8 +37,6 @@ import edu.uci.ics.jung.visualization.GraphZoomScrollPane;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
 import edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.ListSelectionEvent;
 
 public class MainFrame extends JFrame {
 
@@ -41,6 +50,9 @@ public class MainFrame extends JFrame {
 	GraphZoomScrollPane panel;
 	VisualizationViewer vv;
 	private JComboBox comboBox;
+	private JList list;
+	private JList list_1;
+	private JCheckBox chckbxNewCheckBox;
 	
 	
 	public List<String> getWierzcholkiPoczatkowe() {
@@ -139,7 +151,7 @@ public class MainFrame extends JFrame {
 		});
 		contentPane.add(btnNewButton, "cell 3 3,growx");
 		
-		JCheckBox chckbxNewCheckBox = new JCheckBox("ścieżki poboczne/objazdy");
+		chckbxNewCheckBox = new JCheckBox("ścieżki poboczne/objazdy");
 		contentPane.add(chckbxNewCheckBox, "cell 0 4 4 1");
 		
 		JLabel lblNewLabel_1 = new JLabel("Wymagania testowe:");
@@ -151,23 +163,31 @@ public class MainFrame extends JFrame {
 		JScrollPane scrollPane = new JScrollPane();
 		contentPane.add(scrollPane, "cell 0 6 2 1,grow");
 		
+
 		JList list = new JList();
 		list.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent arg0) {
 				//funkcja do zmiany Wymagan na grafie
 			}
 		});
+
+		list = new JList();
+		list.setModel(new DefaultListModel());
+
 		scrollPane.setViewportView(list);
-		
 		JScrollPane scrollPane_1 = new JScrollPane();
 		contentPane.add(scrollPane_1, "cell 2 6 2 1,grow");
 		
+
 		JList list_1 = new JList();
 		list_1.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent arg0) {
 				//funkcja do zm sciezek na grafieS
 			}
 		});
+
+		list_1 = new JList();
+		list_1.setModel(new DefaultListModel());
 		scrollPane_1.setViewportView(list_1);
 	}
 
@@ -217,7 +237,40 @@ public class MainFrame extends JFrame {
 	}
 	
 	void pokazWymaganiaISciezki(){
+		String selectedItem = (String)((DefaultComboBoxModel)comboBox.getModel()).getSelectedItem();
+		if (selectedItem == null) return;
 		
+		TestRequirementInt<String, Integer> testRequirement;
+		if (selectedItem == "Wierzchołkowe") {
+			testRequirement = new NodeCoverage<String, Integer>(graf);
+		} else if (selectedItem == "Krawędziowe") {
+			testRequirement = new EdgeCoverage<String, Integer>(graf);
+		} else if (selectedItem == "Par krawędzi") {
+			testRequirement = new EdgePairCoverage<String, Integer>(graf);
+		} else if (selectedItem == "Ścieżki doskonałe") {
+			testRequirement = new PrimePathsCoverage<String, Integer>(graf);
+		} else {
+			return;
+		}
+		
+		LinkedList<LinkedList<String>> paths = testRequirement.getRequirement();
+
+		DefaultListModel model = (DefaultListModel)list.getModel();
+		model.clear();
+		for (LinkedList<String> path : paths) {
+			model.addElement(path);
+		}
+		
+		Touring touring = chckbxNewCheckBox.isSelected() ? Touring.SidetripsAndDetours : Touring.OnlyTouring;
+		TestPathGenerator<String, Integer> gen = new TestPathGenerator<String, Integer>(graf, wierzcholkiPoczatkowe, wierzcholkiKoncowe, touring);
+		gen.getAllPaths();
+		MultiMap<LinkedList<String>, LinkedList<String>> map = gen.reducePaths(paths);
+		
+		model = (DefaultListModel)list_1.getModel();
+		model.clear();
+		for (LinkedList<String> path : map.keySet()) {
+			model.addElement(path);
+		}
 	}
 
 }
