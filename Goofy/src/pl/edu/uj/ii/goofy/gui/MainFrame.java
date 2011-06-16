@@ -1,7 +1,5 @@
 package pl.edu.uj.ii.goofy.gui;
 
-import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,25 +7,31 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JComponent;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
 import net.miginfocom.swing.MigLayout;
+import pl.edu.uj.ii.goofy.EdgeIdGenerator;
+import pl.edu.uj.ii.goofy.MultiMap;
+import pl.edu.uj.ii.goofy.algorithm.coverage.EdgeCoverage;
+import pl.edu.uj.ii.goofy.algorithm.coverage.EdgePairCoverage;
+import pl.edu.uj.ii.goofy.algorithm.coverage.NodeCoverage;
+import pl.edu.uj.ii.goofy.algorithm.coverage.PrimePathsCoverage;
+import pl.edu.uj.ii.goofy.algorithm.coverage.TestRequirementInt;
+import pl.edu.uj.ii.goofy.algorithm.testpaths.TestPathGenerator;
+import pl.edu.uj.ii.goofy.algorithm.testpaths.Touring;
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.visualization.BasicVisualizationServer;
 import edu.uci.ics.jung.visualization.VisualizationServer;
-import javax.swing.JLabel;
-import javax.swing.JComboBox;
-import javax.swing.JScrollPane;
-import javax.swing.JList;
-
-import pl.edu.uj.ii.goofy.EdgeIdGenerator;
-import java.awt.Panel;
 
 public class MainFrame extends JFrame {
 
@@ -39,6 +43,8 @@ public class MainFrame extends JFrame {
 	private Layout<String, Integer> layout;
 	BasicVisualizationServer<String,Integer> vv;
 	private JComboBox comboBox;
+	private JList list;
+	private JList list_1;
 	
 	
 	public List<String> getWierzcholkiPoczatkowe() {
@@ -141,13 +147,15 @@ public class MainFrame extends JFrame {
 		JScrollPane scrollPane = new JScrollPane();
 		contentPane.add(scrollPane, "cell 0 5 2 1,grow");
 		
-		JList list = new JList();
+		list = new JList();
+		list.setModel(new DefaultListModel());
 		scrollPane.setViewportView(list);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
 		contentPane.add(scrollPane_1, "cell 2 5 2 1,grow");
 		
-		JList list_1 = new JList();
+		list_1 = new JList();
+		list_1.setModel(new DefaultListModel());
 		scrollPane_1.setViewportView(list_1);
 		
 		JButton btnNewButton_1 = new JButton("Pokaż wymagania na grafie");
@@ -202,7 +210,39 @@ public class MainFrame extends JFrame {
 	}
 	
 	void pokazWymaganiaISciezki(){
+		String selectedItem = (String)((DefaultComboBoxModel)comboBox.getModel()).getSelectedItem();
+		if (selectedItem == null) return;
 		
+		TestRequirementInt<String, Integer> testRequirement;
+		if (selectedItem == "Wierzchołkowe") {
+			testRequirement = new NodeCoverage<String, Integer>(graf);
+		} else if (selectedItem == "Krawędziowe") {
+			testRequirement = new EdgeCoverage<String, Integer>(graf);
+		} else if (selectedItem == "Par krawędzi") {
+			testRequirement = new EdgePairCoverage<String, Integer>(graf);
+		} else if (selectedItem == "Ścieżki doskonałe") {
+			testRequirement = new PrimePathsCoverage<String, Integer>(graf);
+		} else {
+			return;
+		}
+		
+		LinkedList<LinkedList<String>> paths = testRequirement.getRequirement();
+
+		DefaultListModel model = (DefaultListModel)list.getModel();
+		model.clear();
+		for (LinkedList<String> path : paths) {
+			model.addElement(path);
+		}
+		
+		TestPathGenerator<String, Integer> gen = new TestPathGenerator<String, Integer>(graf, wierzcholkiPoczatkowe, wierzcholkiKoncowe, Touring.SidetripsAndDetours);
+		gen.getAllPaths();
+		MultiMap<LinkedList<String>, LinkedList<String>> map = gen.reducePaths(paths);
+		
+		model = (DefaultListModel)list_1.getModel();
+		model.clear();
+		for (LinkedList<String> path : map.keySet()) {
+			model.addElement(path);
+		}
 	}
 
 }
