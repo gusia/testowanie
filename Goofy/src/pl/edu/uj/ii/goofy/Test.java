@@ -1,11 +1,9 @@
 package pl.edu.uj.ii.goofy;
 
+import java.util.LinkedList;
 import java.util.List;
 
-import pl.edu.uj.ii.goofy.algorithm.coverage.EdgeCoverage;
-import pl.edu.uj.ii.goofy.algorithm.coverage.EdgePairCoverage;
-import pl.edu.uj.ii.goofy.algorithm.coverage.PrimePathsCoverage;
-
+import pl.edu.uj.ii.goofy.algorithm.testpaths.TestPathGenerator;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.Graph;
 
@@ -22,18 +20,25 @@ public class Test {
 		graph.addVertex(5);
 		graph.addVertex(6);
 		
-		graph.addEdge(1, 0, 1);
+		graph.addEdge(0, 0, 1);
+		graph.addEdge(1, 0, 4);
 		graph.addEdge(2, 1, 2);
-		graph.addEdge(3, 2, 1);
-		graph.addEdge(4, 2, 0);
-//		graph.addEdge(5, 4, 5);
-//		graph.addEdge(6, 5, 6);
-//		graph.addEdge(7, 6, 0);
-//		graph.addEdge(8, 4, 6);
-//		graph.addEdge(9, 5, 6);
+		graph.addEdge(3, 1, 5);
+		graph.addEdge(4, 2, 3);
+		graph.addEdge(5, 3, 6);
+		graph.addEdge(6, 4, 4);
+		graph.addEdge(7, 4, 6);
+		graph.addEdge(8, 5, 6);
 		
 		
-		List<List<Integer>> paths = new PrimePathsCoverage<Integer, Integer>().getRequirement(graph);
+//		List<List<Integer>> paths = new PrimePathsCoverage<Integer, Integer>().getRequirement(graph);
+		LinkedList<Integer> startNodes = new LinkedList<Integer>();
+		LinkedList<Integer> endNodes = new LinkedList<Integer>();
+		startNodes.add(0);
+		startNodes.add(1);
+		endNodes.add(6);
+		
+		LinkedList<LinkedList<Integer>> paths = new TestPathGenerator<Integer, Integer>(graph, startNodes, endNodes).getPaths();
 		
 		for (List<Integer> path : paths) {
 			for (Integer node : path) {
