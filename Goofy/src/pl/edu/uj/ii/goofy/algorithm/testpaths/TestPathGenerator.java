@@ -27,11 +27,12 @@ public class TestPathGenerator<N,E> {
 			LinkedList<N> startPath = new LinkedList<N>();
 			startPath.add(startNode);
 			
-			if (touring == Touring.Sidetrips || touring == Touring.SidetripsAndDetours) {
-				findCyclePaths(startPath);
-			} else {
-				findSimplePaths(startPath);
-			}
+//			if (touring == Touring.Sidetrips || touring == Touring.SidetripsAndDetours) {
+//				findCyclePaths(startPath);
+//			} else {
+//				findSimplePaths(startPath);
+//			}
+			findCyclePaths(startPath);
 		}
 		
 		return paths;
