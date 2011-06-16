@@ -40,7 +40,6 @@ public class TestPathGenerator<N,E> {
 		for (List<N> requirement : requirements) {
 			for (LinkedList<N> path : paths) {
 				if (isCoverRequirement(path, requirement)) {
-					//dict.put(requirement, path);
 					prePathReq.put(path, requirement);
 				}
 			}
@@ -52,6 +51,8 @@ public class TestPathGenerator<N,E> {
 			dict.put(prePathReq.getValues(key), key);
 		}
 		
+		prePathReq = new MultiMap<LinkedList<N>, List<N>>();
+		
 		for (Collection<List<N>> key : dict.keySet()) { 
 			LinkedList<N> shortest = null;
 			
@@ -61,7 +62,24 @@ public class TestPathGenerator<N,E> {
 				}
 			}
 			
-			pathReq.put(shortest, key);
+			prePathReq.put(shortest, key);
+		}
+		
+		for (LinkedList<N> key : prePathReq.keySet()) { 
+			Collection<List<N>> values = prePathReq.getValues(key);
+			boolean contains = false;
+			for (LinkedList<N> key2 : prePathReq.keySet()) { 
+				if (key != key2) {
+					Collection<List<N>> values2 = prePathReq.getValues(key2);
+					if (values2.containsAll(values)) {
+						contains = true;
+					}
+				}
+			}
+			
+			if (!contains) {
+				pathReq.put(key, values);
+			}
 		}
 		
 		return pathReq;
@@ -71,6 +89,7 @@ public class TestPathGenerator<N,E> {
 		return longestCommonSubsequence(path, requirement) == requirement.size();
 	}
 	
+	@SuppressWarnings("unchecked")
 	private int longestCommonSubsequence(List<N> path, List<N> requirement) {
 		N[] pathArray = (N[]) path.toArray();
 		N[] requArray = (N[]) requirement.toArray();
