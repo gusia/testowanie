@@ -20,7 +20,10 @@ import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.visualization.BasicVisualizationServer;
+import edu.uci.ics.jung.visualization.GraphZoomScrollPane;
 import edu.uci.ics.jung.visualization.VisualizationServer;
+import edu.uci.ics.jung.visualization.VisualizationViewer;
+
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
 import javax.swing.JScrollPane;
@@ -28,6 +31,7 @@ import javax.swing.JList;
 
 import pl.edu.uj.ii.goofy.EdgeIdGenerator;
 import java.awt.Panel;
+import javax.swing.JCheckBox;
 
 public class MainFrame extends JFrame {
 
@@ -86,7 +90,7 @@ public class MainFrame extends JFrame {
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		contentPane.setLayout(new MigLayout("", "[::150,fill][::150,fill][fill][::200,fill][::700,grow]", "[fill][][][][][grow][]"));
+		contentPane.setLayout(new MigLayout("", "[100:100:100,fill][100px:100px:100px,fill][100px:100px:100px,fill][100px:100px:100px,fill][::700,grow]", "[fill][][][][][][grow][]"));
 		test();
 		JButton btnDodajWierzchoki = new JButton("Dodaj wierzchołki");
 		btnDodajWierzchoki.addActionListener(new ActionListener() {
@@ -104,9 +108,10 @@ public class MainFrame extends JFrame {
 			}
 		});
 		
-		JPanel panel = new JPanel();
+		GraphZoomScrollPane panel = new GraphZoomScrollPane(new VisualizationViewer<String, Integer>(layout));
+		
 		contentPane.add(btnWierzchokiPocztkowekocowe, "cell 0 1 4 1");
-		contentPane.add(vv,"cell 4 0 1 7,grow");
+		contentPane.add(panel,"cell 4 0 1 8,grow");
 
 		JButton btnDodajKrawdzie = new JButton("Dodaj krawędzie");
 		btnDodajKrawdzie.addActionListener(new ActionListener() {
@@ -132,29 +137,26 @@ public class MainFrame extends JFrame {
 		});
 		contentPane.add(btnNewButton, "cell 3 3,growx");
 		
+		JCheckBox chckbxNewCheckBox = new JCheckBox("ścieżki poboczne/objazdy");
+		contentPane.add(chckbxNewCheckBox, "cell 0 4 4 1");
+		
 		JLabel lblNewLabel_1 = new JLabel("Wymagania testowe:");
-		contentPane.add(lblNewLabel_1, "cell 0 4 2 1");
+		contentPane.add(lblNewLabel_1, "cell 0 5 2 1");
 		
 		JLabel lblNewLabel_2 = new JLabel("Ścieżki testowe:");
-		contentPane.add(lblNewLabel_2, "cell 2 4 2 1");
+		contentPane.add(lblNewLabel_2, "cell 2 5 2 1");
 		
 		JScrollPane scrollPane = new JScrollPane();
-		contentPane.add(scrollPane, "cell 0 5 2 1,grow");
+		contentPane.add(scrollPane, "cell 0 6 2 1,grow");
 		
 		JList list = new JList();
 		scrollPane.setViewportView(list);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
-		contentPane.add(scrollPane_1, "cell 2 5 2 1,grow");
+		contentPane.add(scrollPane_1, "cell 2 6 2 1,grow");
 		
 		JList list_1 = new JList();
 		scrollPane_1.setViewportView(list_1);
-		
-		JButton btnNewButton_1 = new JButton("Pokaż wymagania na grafie");
-		contentPane.add(btnNewButton_1, "cell 0 6 2 1");
-		
-		JButton btnNewButton_2 = new JButton("Pokaż ścieżki na grafie");
-		contentPane.add(btnNewButton_2, "cell 2 6 2 1,growx");
 	}
 
 	void dodajWierzcholki() {
