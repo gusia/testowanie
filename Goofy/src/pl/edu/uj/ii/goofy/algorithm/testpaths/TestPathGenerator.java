@@ -1,6 +1,8 @@
 package pl.edu.uj.ii.goofy.algorithm.testpaths;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 import pl.edu.uj.ii.goofy.MultiMap;
@@ -9,10 +11,10 @@ import edu.uci.ics.jung.graph.Graph;
 
 
 public class TestPathGenerator<N,E> {
-	public TestPathGenerator(Graph<N, E> graph, LinkedList<N> start, LinkedList<N> end, Touring touring) {
+	public TestPathGenerator(Graph<N, E> graph, Collection<N> start, Collection<N> end, Touring touring) {
 		this.graph = graph;
-		this.startNodes = start;
-		this.endNodes = end;
+		this.startNodes = new HashSet<N>(start);
+		this.endNodes = new HashSet<N>(end);
 		this.allowedLength = graph.getVertexCount() * 3;
 		this.touring = touring;
 		this.pathReq = new MultiMap<LinkedList<N>, LinkedList<N>>();
@@ -23,12 +25,6 @@ public class TestPathGenerator<N,E> {
 		for (N startNode : startNodes) {
 			LinkedList<N> startPath = new LinkedList<N>();
 			startPath.add(startNode);
-			
-//			if (touring == Touring.Sidetrips || touring == Touring.SidetripsAndDetours) {
-//				findCyclePaths(startPath);
-//			} else {
-//				findSimplePaths(startPath);
-//			}
 			findCyclePaths(startPath);
 		}
 		
@@ -108,16 +104,15 @@ public class TestPathGenerator<N,E> {
 		return false;
 	}
 	
-	@SuppressWarnings("unchecked")
 	private boolean longestCommonSubsequence(LinkedList<N> path, LinkedList<N> requirement) {
-		N[] pathArray = (N[]) path.toArray();
-		N[] requArray = (N[]) requirement.toArray();
+		ArrayList<N> pathArray = new ArrayList<N>(path);
+		ArrayList<N> requArray = new ArrayList<N>(requirement);
 				
-		int C[][] = new int[pathArray.length + 1][requArray.length + 1];
+		int C[][] = new int[pathArray.size() + 1][requArray.size() + 1];
 		
-		for (int i = 0; i < pathArray.length; ++i) {
-			for (int j = 0; j < requArray.length; ++j) {
-				if (pathArray[i].equals(requArray[j])) {
+		for (int i = 0; i < pathArray.size(); ++i) {
+			for (int j = 0; j < requArray.size(); ++j) {
+				if (pathArray.get(i).equals(requArray.get(j))) {
 					C[i + 1][j + 1] = C[i][j] + 1;
 				} else {
 					C[i + 1][j + 1] = Math.max(C[i][j + 1], C[i + 1][j]);
@@ -125,7 +120,7 @@ public class TestPathGenerator<N,E> {
 			}
 		}
 		
-		return C[pathArray.length][requArray.length] == requirement.size(); 
+		return C[pathArray.size()][requArray.size()] == requirement.size(); 
 	}
 	
 	private void findSimplePaths(LinkedList<N> begin) {
@@ -207,8 +202,8 @@ public class TestPathGenerator<N,E> {
 	private LinkedList<LinkedList<N>> paths;
 	private MultiMap<LinkedList<N>, LinkedList<N>> pathReq;
 	private Graph<N, E> graph;
-	private LinkedList<N> startNodes;
-	private LinkedList<N> endNodes;
+	private HashSet<N> startNodes;
+	private HashSet<N> endNodes;
 	private int allowedLength;
 	private Touring touring;
 }
