@@ -129,6 +129,7 @@ public class WierzcholkiFrame extends JDialog {
 	}
 	void dodajWierzcholek(){
 		String el = textField.getText();
+		if (el.equals("")|| el ==null || el.charAt(0) == ' ') return;
 		if (!((DefaultListModel)list.getModel()).contains(el)){
 			((DefaultListModel)list.getModel()).addElement(el);
 			if (do_usuniecia.contains(el)){
@@ -172,7 +173,6 @@ public class WierzcholkiFrame extends JDialog {
 			graf.addVertex(vertex);
 			System.out.print("b ");
 		}
-		mFrame.setGraf(graf);
 		dispose();
 	}
 }

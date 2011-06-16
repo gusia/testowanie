@@ -28,7 +28,7 @@ public class MainFrame extends JFrame {
 	private JPanel panel;
 	private DirectedSparseGraph<String, Integer> graf;
 	Layout<String, Integer> layout;
-	BasicVisualizationServer<String,Integer> vv;
+	BasicVisualizationServer<String, Integer> vv;
 
 	public DirectedSparseGraph<String, Integer> getGraf() {
 		return graf;
@@ -60,16 +60,17 @@ public class MainFrame extends JFrame {
 	public MainFrame() {
 		graf = new DirectedSparseGraph<String, Integer>();
 		layout = new CircleLayout<String, Integer>(graf);
-		layout.setSize(new Dimension(300,400));
-		vv = new BasicVisualizationServer<String,Integer>(layout);
-		vv.setPreferredSize(new Dimension(300,400));
+		layout.setSize(new Dimension(300, 400));
+		vv = new BasicVisualizationServer<String, Integer>(layout);
+		vv.setPreferredSize(new Dimension(300, 400));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 703, 518);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		contentPane.setLayout(new MigLayout("", "[fill][grow][grow][grow]", "[fill][][][][grow]"));
-		
+		contentPane.setLayout(new MigLayout("", "[fill][grow][grow][grow]",
+				"[fill][][][][grow]"));
+
 		JButton btnDodajWierzchoki = new JButton("Dodaj wierzchołki");
 		btnDodajWierzchoki.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -77,14 +78,13 @@ public class MainFrame extends JFrame {
 			}
 		});
 		contentPane.add(btnDodajWierzchoki, "cell 0 0");
-		
+
 		panel = new JPanel();
 		contentPane.add(panel, "cell 1 0 3 5,grow");
 		panel.add(vv);
-		test();
 		
-		
-		JButton btnWierzchokiPocztkowekocowe = new JButton("Wierzchołki początkowe/końcowe");
+		JButton btnWierzchokiPocztkowekocowe = new JButton(
+				"Wierzchołki początkowe/końcowe");
 		btnWierzchokiPocztkowekocowe.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				PoczatkoweFrame pf = new PoczatkoweFrame();
@@ -94,28 +94,27 @@ public class MainFrame extends JFrame {
 			}
 		});
 		contentPane.add(btnWierzchokiPocztkowekocowe, "cell 0 1");
-		
+
 		JButton btnDodajKrawdzie = new JButton("Dodaj krawędzie");
 		btnDodajKrawdzie.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				KrawedzieFrame kf = new KrawedzieFrame();
-				kf.setVisible(true);
+				dodajKrawedzie();
 			}
 		});
 		contentPane.add(btnDodajKrawdzie, "cell 0 2");
 	}
 
-	void dodajWierzcholki(){
-			WierzcholkiFrame wf = new WierzcholkiFrame(this);
-			wf.setModal(true);
-			wf.setVisible(true);
-			layout.reset();
-			
+	void dodajWierzcholki() {
+		WierzcholkiFrame wf = new WierzcholkiFrame(this);
+		wf.setModal(true);
+		wf.setVisible(true);
+		// layout.reset();
 	}
-	
-	void test (){
-		graf.addVertex("a");
-		graf.addVertex("b");
-		graf.addVertex("c");
+
+	void dodajKrawedzie() {
+		KrawedzieFrame kf = new KrawedzieFrame(this);
+		kf.setVisible(true);
+		kf.setModal(true);
 	}
+
 }
