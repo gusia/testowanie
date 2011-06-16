@@ -1,7 +1,5 @@
 package pl.edu.uj.ii.goofy.gui;
 
-import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,28 +8,26 @@ import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
-import javax.swing.JComponent;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
 import net.miginfocom.swing.MigLayout;
-import edu.uci.ics.jung.algorithms.layout.CircleLayout;
+import pl.edu.uj.ii.goofy.EdgeIdGenerator;
+import edu.uci.ics.jung.algorithms.layout.FRLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
-import edu.uci.ics.jung.visualization.BasicVisualizationServer;
 import edu.uci.ics.jung.visualization.GraphZoomScrollPane;
-import edu.uci.ics.jung.visualization.VisualizationServer;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
-
-import javax.swing.JLabel;
-import javax.swing.JComboBox;
-import javax.swing.JScrollPane;
-import javax.swing.JList;
-
-import pl.edu.uj.ii.goofy.EdgeIdGenerator;
-import java.awt.Panel;
-import javax.swing.JCheckBox;
+import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
+import edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
 
 public class MainFrame extends JFrame {
 
@@ -41,7 +37,9 @@ public class MainFrame extends JFrame {
 	private JPanel contentPane;
 	private DirectedSparseGraph<String, Integer> graf;
 	private Layout<String, Integer> layout;
-	BasicVisualizationServer<String,Integer> vv;
+	//BasicVisualizationServer<String,Integer> vv;
+	GraphZoomScrollPane panel;
+	VisualizationViewer vv;
 	private JComboBox comboBox;
 	
 	
@@ -81,9 +79,9 @@ public class MainFrame extends JFrame {
 	 */
 	public MainFrame() {
 		graf = new DirectedSparseGraph<String, Integer>();
-		layout = new CircleLayout<String, Integer>(graf);
+		//layout = new CircleLayout<String, Integer>(graf);
 		//layout.setSize(new Dimension(300, 400));
-		vv = new BasicVisualizationServer<String, Integer>(layout);
+		vv = new VisualizationViewer (new FRLayout(graf));//new BasicVisualizationServer<String, Integer>(layout);
 		//this.pack();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 881, 614);
@@ -91,7 +89,7 @@ public class MainFrame extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(new MigLayout("", "[100:100:100,fill][100px:100px:100px,fill][100px:100px:100px,fill][100px:100px:100px,fill][::700,grow]", "[fill][][][][][][grow][]"));
-		test();
+		//test();
 		JButton btnDodajWierzchoki = new JButton("Dodaj wierzchołki");
 		btnDodajWierzchoki.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -108,7 +106,11 @@ public class MainFrame extends JFrame {
 			}
 		});
 		
-		GraphZoomScrollPane panel = new GraphZoomScrollPane(new VisualizationViewer<String, Integer>(layout));
+		panel = new GraphZoomScrollPane(vv);
+		panel.setAutoscrolls(true);
+		vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller<String>());
+		vv.getRenderer().getVertexLabelRenderer().setPosition(Position.CNTR);
+	
 		
 		contentPane.add(btnWierzchokiPocztkowekocowe, "cell 0 1 4 1");
 		contentPane.add(panel,"cell 4 0 1 8,grow");
@@ -150,12 +152,22 @@ public class MainFrame extends JFrame {
 		contentPane.add(scrollPane, "cell 0 6 2 1,grow");
 		
 		JList list = new JList();
+		list.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent arg0) {
+				//funkcja do zmiany Wymagan na grafie
+			}
+		});
 		scrollPane.setViewportView(list);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
 		contentPane.add(scrollPane_1, "cell 2 6 2 1,grow");
 		
 		JList list_1 = new JList();
+		list_1.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent arg0) {
+				//funkcja do zm sciezek na grafieS
+			}
+		});
 		scrollPane_1.setViewportView(list_1);
 	}
 
@@ -163,13 +175,14 @@ public class MainFrame extends JFrame {
 		WierzcholkiFrame wf = new WierzcholkiFrame(this);
 		wf.setModal(true);
 		wf.setVisible(true);
-		((VisualizationServer<String, Integer>) graf).repaint();
+		panel.repaint();
 	}
 
 	void dodajKrawedzie() {
 		KrawedzieFrame kf = new KrawedzieFrame(this);
 		kf.setVisible(true);
 		kf.setModal(true);
+		panel.repaint();
 	}
 	
 	void oznaczPoczatkoweKoncoweWierzcholki(){
