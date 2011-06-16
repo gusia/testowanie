@@ -9,6 +9,7 @@ import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -31,7 +32,9 @@ import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.visualization.BasicVisualizationServer;
+import edu.uci.ics.jung.visualization.GraphZoomScrollPane;
 import edu.uci.ics.jung.visualization.VisualizationServer;
+import edu.uci.ics.jung.visualization.VisualizationViewer;
 
 public class MainFrame extends JFrame {
 
@@ -45,6 +48,7 @@ public class MainFrame extends JFrame {
 	private JComboBox comboBox;
 	private JList list;
 	private JList list_1;
+	private JCheckBox chckbxNewCheckBox;
 	
 	
 	public List<String> getWierzcholkiPoczatkowe() {
@@ -92,7 +96,7 @@ public class MainFrame extends JFrame {
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		contentPane.setLayout(new MigLayout("", "[::150,fill][::150,fill][fill][::200,fill][::700,grow]", "[fill][][][][][grow][]"));
+		contentPane.setLayout(new MigLayout("", "[100:100:100,fill][100px:100px:100px,fill][100px:100px:100px,fill][100px:100px:100px,fill][::700,grow]", "[fill][][][][][][grow][]"));
 		test();
 		JButton btnDodajWierzchoki = new JButton("Dodaj wierzchołki");
 		btnDodajWierzchoki.addActionListener(new ActionListener() {
@@ -110,9 +114,10 @@ public class MainFrame extends JFrame {
 			}
 		});
 		
-		JPanel panel = new JPanel();
+		GraphZoomScrollPane panel = new GraphZoomScrollPane(new VisualizationViewer<String, Integer>(layout));
+		
 		contentPane.add(btnWierzchokiPocztkowekocowe, "cell 0 1 4 1");
-		contentPane.add(vv,"cell 4 0 1 7,grow");
+		contentPane.add(panel,"cell 4 0 1 8,grow");
 
 		JButton btnDodajKrawdzie = new JButton("Dodaj krawędzie");
 		btnDodajKrawdzie.addActionListener(new ActionListener() {
@@ -138,31 +143,28 @@ public class MainFrame extends JFrame {
 		});
 		contentPane.add(btnNewButton, "cell 3 3,growx");
 		
+		chckbxNewCheckBox = new JCheckBox("ścieżki poboczne/objazdy");
+		contentPane.add(chckbxNewCheckBox, "cell 0 4 4 1");
+		
 		JLabel lblNewLabel_1 = new JLabel("Wymagania testowe:");
-		contentPane.add(lblNewLabel_1, "cell 0 4 2 1");
+		contentPane.add(lblNewLabel_1, "cell 0 5 2 1");
 		
 		JLabel lblNewLabel_2 = new JLabel("Ścieżki testowe:");
-		contentPane.add(lblNewLabel_2, "cell 2 4 2 1");
+		contentPane.add(lblNewLabel_2, "cell 2 5 2 1");
 		
 		JScrollPane scrollPane = new JScrollPane();
-		contentPane.add(scrollPane, "cell 0 5 2 1,grow");
+		contentPane.add(scrollPane, "cell 0 6 2 1,grow");
 		
 		list = new JList();
 		list.setModel(new DefaultListModel());
 		scrollPane.setViewportView(list);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
-		contentPane.add(scrollPane_1, "cell 2 5 2 1,grow");
+		contentPane.add(scrollPane_1, "cell 2 6 2 1,grow");
 		
 		list_1 = new JList();
 		list_1.setModel(new DefaultListModel());
 		scrollPane_1.setViewportView(list_1);
-		
-		JButton btnNewButton_1 = new JButton("Pokaż wymagania na grafie");
-		contentPane.add(btnNewButton_1, "cell 0 6 2 1");
-		
-		JButton btnNewButton_2 = new JButton("Pokaż ścieżki na grafie");
-		contentPane.add(btnNewButton_2, "cell 2 6 2 1,growx");
 	}
 
 	void dodajWierzcholki() {
@@ -234,7 +236,8 @@ public class MainFrame extends JFrame {
 			model.addElement(path);
 		}
 		
-		TestPathGenerator<String, Integer> gen = new TestPathGenerator<String, Integer>(graf, wierzcholkiPoczatkowe, wierzcholkiKoncowe, Touring.SidetripsAndDetours);
+		Touring touring = chckbxNewCheckBox.isSelected() ? Touring.SidetripsAndDetours : Touring.OnlyTouring;
+		TestPathGenerator<String, Integer> gen = new TestPathGenerator<String, Integer>(graf, wierzcholkiPoczatkowe, wierzcholkiKoncowe, touring);
 		gen.getAllPaths();
 		MultiMap<LinkedList<String>, LinkedList<String>> map = gen.reducePaths(paths);
 		
