@@ -2,8 +2,7 @@ package pl.edu.uj.ii.goofy;
 
 import java.awt.Dimension;
 
-import javax.swing.JFrame;
-
+import pl.edu.uj.ii.goofy.gui.MainFrame;
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
@@ -37,10 +36,13 @@ public class Main {
 		BasicVisualizationServer<Integer,String> vv =
 		new BasicVisualizationServer<Integer,String>(layout);
 		vv.setPreferredSize(new Dimension(350,350)); //Sets the viewing area size
-		JFrame frame = new JFrame("Simple Graph View");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().add(vv);
-		frame.pack();
-		frame.setVisible(true);
+//		JFrame frame = new JFrame("Simple Graph View");
+//		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//		frame.getContentPane().add(vv);
+//		frame.pack();
+//		frame.setVisible(true);
+		MainFrame mainFrame = new MainFrame();
+		mainFrame.setGraph(vv);
+		mainFrame.setVisible(true);
 	}
 }
