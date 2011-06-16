@@ -8,9 +8,13 @@ import edu.uci.ics.jung.graph.Graph;
 
 public class EdgeCoverage<N, E> implements TestRequirementInt<N, E> {
 
+	public EdgeCoverage(Graph<N, E> graph) {
+		this.graph = graph;
+	}
+	
 	@Override
-	public List<List<N>> getRequirement(Graph<N, E> graph) {
-		List<List<N>> paths = new LinkedList<List<N>>();
+	public LinkedList<LinkedList<N>> getRequirement() {
+		LinkedList<LinkedList<N>> paths = new LinkedList<LinkedList<N>>();
 		HashSet<N> passedNodes = new HashSet<N>();
 		
 		for (N node : graph.getVertices()) {
@@ -36,4 +40,5 @@ public class EdgeCoverage<N, E> implements TestRequirementInt<N, E> {
 		return paths;
 	}
 
+	private Graph<N, E> graph;
 }
