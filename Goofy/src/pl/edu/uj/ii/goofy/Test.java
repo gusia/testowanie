@@ -60,13 +60,13 @@ public class Test {
 		
 		System.out.println(graph);
 		
-		List<List<Integer>> requirements = new PrimePathsCoverage<Integer, Integer>().getRequirement(graph);
+		LinkedList<LinkedList<Integer>> requirements = new PrimePathsCoverage<Integer, Integer>(graph).getRequirement();
 		LinkedList<Integer> startNodes = new LinkedList<Integer>();
 		LinkedList<Integer> endNodes = new LinkedList<Integer>();
 		startNodes.add(1);
 		endNodes.add(4);
 		
-		TestPathGenerator<Integer, Integer> tpg = new TestPathGenerator<Integer, Integer>(graph, startNodes, endNodes, Touring.SidetripsAndDetours);
+		TestPathGenerator<Integer, Integer> tpg = new TestPathGenerator<Integer, Integer>(graph, startNodes, endNodes, Touring.OnlyTouring);
 		LinkedList<LinkedList<Integer>> testPaths = tpg.getAllPaths();
 		
 		System.out.println("requirements:");
@@ -79,7 +79,7 @@ public class Test {
 			System.out.println(path);
 		}
 		
-		MultiMap<LinkedList<Integer>, List<Integer>> reqPath = tpg.reducePaths(requirements);
+		MultiMap<LinkedList<Integer>, LinkedList<Integer>> reqPath = tpg.reducePaths(requirements);
 		
 		System.out.println("reqPaths:");
 		for (LinkedList<Integer> key : reqPath.keySet()) {

@@ -2,23 +2,20 @@ package pl.edu.uj.ii.goofy.algorithm.testpaths;
 
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Stack;
 
 import pl.edu.uj.ii.goofy.MultiMap;
 import edu.uci.ics.jung.graph.Graph;
-import edu.uci.ics.jung.graph.util.Pair;
 
 
 
 public class TestPathGenerator<N,E> {
-	public TestPathGenerator(Graph<N, E> graph, List<N> start, List<N> end, Touring touring) {
+	public TestPathGenerator(Graph<N, E> graph, LinkedList<N> start, LinkedList<N> end, Touring touring) {
 		this.graph = graph;
 		this.startNodes = start;
 		this.endNodes = end;
 		this.allowedLength = graph.getVertexCount() * 3;
 		this.touring = touring;
-		this.pathReq = new MultiMap<LinkedList<N>, List<N>>();
+		this.pathReq = new MultiMap<LinkedList<N>, LinkedList<N>>();
 		paths = new LinkedList<LinkedList<N>>();
 	}
 	
@@ -38,10 +35,10 @@ public class TestPathGenerator<N,E> {
 		return paths;
 	}
 	
-	public MultiMap<LinkedList<N>, List<N>> reducePaths(List<List<N>> requirements) {
-		MultiMap<LinkedList<N>, List<N>> prePathReq = new MultiMap<LinkedList<N>, List<N>>();
+	public MultiMap<LinkedList<N>, LinkedList<N>> reducePaths(LinkedList<LinkedList<N>> requirements) {
+		MultiMap<LinkedList<N>, LinkedList<N>> prePathReq = new MultiMap<LinkedList<N>, LinkedList<N>>();
 		
-		for (List<N> requirement : requirements) {
+		for (LinkedList<N> requirement : requirements) {
 			for (LinkedList<N> path : paths) {
 				if (isCoverRequirement(path, requirement)) {
 					prePathReq.put(path, requirement);
@@ -49,15 +46,15 @@ public class TestPathGenerator<N,E> {
 			}
 		}
 	
-		MultiMap<Collection<List<N>>, LinkedList<N>> dict = new MultiMap<Collection<List<N>>, LinkedList<N>>();
+		MultiMap<Collection<LinkedList<N>>, LinkedList<N>> dict = new MultiMap<Collection<LinkedList<N>>, LinkedList<N>>();
 		
 		for (LinkedList<N> key : prePathReq.keySet()) {
 			dict.put(prePathReq.getValues(key), key);
 		}
 		
-		prePathReq = new MultiMap<LinkedList<N>, List<N>>();
+		prePathReq = new MultiMap<LinkedList<N>, LinkedList<N>>();
 		
-		for (Collection<List<N>> key : dict.keySet()) { 
+		for (Collection<LinkedList<N>> key : dict.keySet()) { 
 			LinkedList<N> shortest = null;
 			
 			for (LinkedList<N> path : dict.getValues(key)) {
@@ -70,11 +67,11 @@ public class TestPathGenerator<N,E> {
 		}
 		
 		for (LinkedList<N> key : prePathReq.keySet()) { 
-			Collection<List<N>> values = prePathReq.getValues(key);
+			Collection<LinkedList<N>> values = prePathReq.getValues(key);
 			boolean contains = false;
 			for (LinkedList<N> key2 : prePathReq.keySet()) { 
 				if (key != key2) {
-					Collection<List<N>> values2 = prePathReq.getValues(key2);
+					Collection<LinkedList<N>> values2 = prePathReq.getValues(key2);
 					if (values2.containsAll(values)) {
 						contains = true;
 					}
@@ -89,7 +86,7 @@ public class TestPathGenerator<N,E> {
 		return pathReq;
 	}
 	
-	private boolean isCoverRequirement(LinkedList<N> path, List<N> requirement) {
+	private boolean isCoverRequirement(LinkedList<N> path, LinkedList<N> requirement) {
 		if (touring == Touring.OnlyTouring) {
 			return isSubPath(path, requirement);
 		}
@@ -97,7 +94,7 @@ public class TestPathGenerator<N,E> {
 		return longestCommonSubsequence(path, requirement);
 	}
 	
-	private boolean isSubPath(List<N> p1, List<N> p2) {
+	private boolean isSubPath(LinkedList<N> p1, LinkedList<N> p2) {
 		if (p1.size() < p2.size()) {
 			return false;
 		}
@@ -112,10 +109,9 @@ public class TestPathGenerator<N,E> {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private boolean longestCommonSubsequence(List<N> path, List<N> requirement) {
+	private boolean longestCommonSubsequence(LinkedList<N> path, LinkedList<N> requirement) {
 		N[] pathArray = (N[]) path.toArray();
 		N[] requArray = (N[]) requirement.toArray();
-		LinkedList<Integer> sequence = new LinkedList<Integer>();
 				
 		int C[][] = new int[pathArray.length + 1][requArray.length + 1];
 		
@@ -209,10 +205,10 @@ public class TestPathGenerator<N,E> {
 //	}
 	
 	private LinkedList<LinkedList<N>> paths;
-	private MultiMap<LinkedList<N>, List<N>> pathReq;
+	private MultiMap<LinkedList<N>, LinkedList<N>> pathReq;
 	private Graph<N, E> graph;
-	private List<N> startNodes;
-	private List<N> endNodes;
+	private LinkedList<N> startNodes;
+	private LinkedList<N> endNodes;
 	private int allowedLength;
 	private Touring touring;
 }
