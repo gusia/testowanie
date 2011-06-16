@@ -1,17 +1,22 @@
 package pl.edu.uj.ii.goofy.algorithm.coverage;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.HashSet;
+import java.util.LinkedList;
 
 import edu.uci.ics.jung.graph.Graph;
 
 public class EdgePairCoverage<N, E> implements TestRequirementInt<N, E> {
 
+	private Graph<N, E> graph;
+
+	public EdgePairCoverage(Graph<N, E> graph) {
+		this.graph = graph;
+	}
+	
 	@Override
-	public List<List<N>> getRequirement(Graph<N, E> graph) {
-		List<List<N>> paths = new LinkedList<List<N>>();
-		HashSet<List<N>> passedPaths = new HashSet<List<N>>();
+	public LinkedList<LinkedList<N>> getRequirement() {
+		LinkedList<LinkedList<N>> paths = new LinkedList<LinkedList<N>>();
+		HashSet<LinkedList<N>> passedPaths = new HashSet<LinkedList<N>>();
 		
 		for (N node : graph.getVertices()) {
 			for (N n1 : graph.getSuccessors(node)) {
@@ -22,16 +27,16 @@ public class EdgePairCoverage<N, E> implements TestRequirementInt<N, E> {
 					path.add(n2);
 					paths.add(path);
 					
-					passedPaths.add(list(node, n1));
-					passedPaths.add(list(n1, n2));
-					passedPaths.add(list(node));
-					passedPaths.add(list(n1));
-					passedPaths.add(list(n2));
+					passedPaths.add(LinkedList(node, n1));
+					passedPaths.add(LinkedList(n1, n2));
+					passedPaths.add(LinkedList(node));
+					passedPaths.add(LinkedList(n1));
+					passedPaths.add(LinkedList(n2));
 				}
 			}
 		}
 		
-		for (List<N> path : new EdgeCoverage<N, E>().getRequirement(graph)) {
+		for (LinkedList<N> path : new EdgeCoverage<N, E>(graph).getRequirement()) {
 			if (!passedPaths.contains(path)) {
 				paths.add(path);
 			}
@@ -40,18 +45,18 @@ public class EdgePairCoverage<N, E> implements TestRequirementInt<N, E> {
 		return paths;
 	}
 
-	private List<N> list(N n1, N n2) {
-		LinkedList<N> list = new LinkedList<N>();
-		list.add(n1);
+	private LinkedList<N> LinkedList(N n1, N n2) {
+		LinkedList<N> LinkedList = new LinkedList<N>();
+		LinkedList.add(n1);
 		
 		if (n2 != null) {
-			list.add(n2);
+			LinkedList.add(n2);
 		
 		}
-		return list;
+		return LinkedList;
 	}
 	
-	private List<N> list(N n) {
-		return list(n, null);
+	private LinkedList<N> LinkedList(N n) {
+		return LinkedList(n, null);
 	}
 }

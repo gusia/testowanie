@@ -8,14 +8,20 @@ import edu.uci.ics.jung.graph.Graph;
 
 public class PrimePathsCoverage<N, E> implements TestRequirementInt<N, E> {
 
+	private Graph<N, E> graph;
+
+	public PrimePathsCoverage(Graph<N, E> graph) {
+		this.graph = graph;
+	}
+	
 	@Override
-	public List<List<N>> getRequirement(Graph<N, E> graph) {
-		List<List<N>> tmpList = new LinkedList<List<N>>();
-		List<List<N>> edgePaths = new NodeCoverage<N, E>().getRequirement(graph);
-		LinkedList<List<N>> paths = new LinkedList<List<N>>();
+	public LinkedList<LinkedList<N>> getRequirement() {
+		LinkedList<LinkedList<N>> tmpList = new LinkedList<LinkedList<N>>();
+		LinkedList<LinkedList<N>> edgePaths = new NodeCoverage<N, E>(graph).getRequirement();
+		LinkedList<LinkedList<N>> paths = new LinkedList<LinkedList<N>>();
 				
 		while (!edgePaths.isEmpty()) {
-			for (List<N> path : edgePaths) {
+			for (LinkedList<N> path : edgePaths) {
 				N first = path.get(0);
 				N last = path.get(path.size() - 1);
 				Collection<N> successors = graph.getSuccessors(last);
@@ -41,12 +47,12 @@ public class PrimePathsCoverage<N, E> implements TestRequirementInt<N, E> {
 			}
 			
 			edgePaths = tmpList;
-			tmpList = new LinkedList<List<N>>();
+			tmpList = new LinkedList<LinkedList<N>>();
 		}
 		
-		LinkedList<List<N>> primePaths = new LinkedList<List<N>>();
+		LinkedList<LinkedList<N>> primePaths = new LinkedList<LinkedList<N>>();
 		
-		for (List<N> p1 : paths) {
+		for (LinkedList<N> p1 : paths) {
 			if (p1.size() == 1) {
 				continue;
 			}

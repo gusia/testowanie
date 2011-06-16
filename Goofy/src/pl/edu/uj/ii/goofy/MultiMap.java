@@ -1,26 +1,45 @@
 package pl.edu.uj.ii.goofy;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.LinkedList;
-import java.util.List;
 
 public class MultiMap<K, V> {
 
-	private Hashtable<K, List<V>> ht;
+	private Hashtable<K, HashSet<V>> ht;
 	
 	public MultiMap() {
-		ht = new Hashtable<K, List<V>>();
+		ht = new Hashtable<K, HashSet<V>>();
 	}
 	
 	public void put(K key, V value) {
 		if (ht.containsKey(key)) {
 			ht.get(key).add(value);
 		} else {
-			LinkedList<V> list = new LinkedList<V>();
-			list.add(value);
-			ht.put(key, list);
+			HashSet<V> hashset = new HashSet<V>();
+			hashset.add(value);
+			ht.put(key, hashset);
 		}
+	}
+	
+	public void put(K key, Collection<V> values) {
+		if (ht.containsKey(key)) {
+			HashSet<V> hs = ht.get(key);
+			for (V value : values) {
+				hs.add(value);
+			}
+		} else {
+			HashSet<V> hs = new HashSet<V>();
+			for (V value : values) {
+				hs.add(value);
+			}
+			ht.put(key, hs);
+		}
+	}
+	
+	public Collection<K> keySet() {
+		return ht.keySet();
 	}
 	
 	public Collection<V> getValues(K key) {

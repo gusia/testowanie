@@ -1,9 +1,7 @@
 package pl.edu.uj.ii.goofy.algorithm.coverage;
 
-import java.util.List;
-
-import edu.uci.ics.jung.graph.Graph;
+import java.util.LinkedList;
 
 public interface TestRequirementInt<N, E> {
-	public List<List<N>> getRequirement(Graph<N, E> graph);
+	public LinkedList<LinkedList<N>> getRequirement();
 }
