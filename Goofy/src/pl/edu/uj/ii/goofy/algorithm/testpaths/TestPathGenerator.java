@@ -3,18 +3,21 @@ package pl.edu.uj.ii.goofy.algorithm.testpaths;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Stack;
 
 import pl.edu.uj.ii.goofy.MultiMap;
 import edu.uci.ics.jung.graph.Graph;
+import edu.uci.ics.jung.graph.util.Pair;
+
 
 
 public class TestPathGenerator<N,E> {
-	public TestPathGenerator(Graph<N, E> graph, List<N> start, List<N> end, boolean withCycles) {
+	public TestPathGenerator(Graph<N, E> graph, List<N> start, List<N> end, Touring touring) {
 		this.graph = graph;
 		this.startNodes = start;
 		this.endNodes = end;
 		this.allowedLength = graph.getVertexCount() * 3;
-		this.withCycles = withCycles;
+		this.touring = touring;
 		this.pathReq = new MultiMap<LinkedList<N>, List<N>>();
 		paths = new LinkedList<LinkedList<N>>();
 	}
@@ -24,7 +27,7 @@ public class TestPathGenerator<N,E> {
 			LinkedList<N> startPath = new LinkedList<N>();
 			startPath.add(startNode);
 			
-			if (withCycles) {
+			if (touring == Touring.Sidetrips || touring == Touring.SidetripsAndDetours) {
 				findCyclePaths(startPath);
 			} else {
 				findSimplePaths(startPath);
@@ -86,14 +89,33 @@ public class TestPathGenerator<N,E> {
 	}
 	
 	private boolean isCoverRequirement(LinkedList<N> path, List<N> requirement) {
-		return longestCommonSubsequence(path, requirement) == requirement.size();
+		if (touring == Touring.OnlyTouring) {
+			return isSubPath(path, requirement);
+		}
+		
+		return longestCommonSubsequence(path, requirement);
+	}
+	
+	private boolean isSubPath(List<N> p1, List<N> p2) {
+		if (p1.size() < p2.size()) {
+			return false;
+		}
+		
+		for (int i = 0; i < p1.size() - p2.size() + 1; ++i) {
+			if (p1.subList(i, i + p2.size()).equals(p2)) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	@SuppressWarnings("unchecked")
-	private int longestCommonSubsequence(List<N> path, List<N> requirement) {
+	private boolean longestCommonSubsequence(List<N> path, List<N> requirement) {
 		N[] pathArray = (N[]) path.toArray();
 		N[] requArray = (N[]) requirement.toArray();
-		
+		LinkedList<Integer> sequence = new LinkedList<Integer>();
+				
 		int C[][] = new int[pathArray.length + 1][requArray.length + 1];
 		
 		for (int i = 0; i < pathArray.length; ++i) {
@@ -106,7 +128,7 @@ public class TestPathGenerator<N,E> {
 			}
 		}
 		
-		return C[pathArray.length][requArray.length];
+		return C[pathArray.length][requArray.length] == requirement.size(); 
 	}
 	
 	private void findSimplePaths(LinkedList<N> begin) {
@@ -191,5 +213,5 @@ public class TestPathGenerator<N,E> {
 	private List<N> startNodes;
 	private List<N> endNodes;
 	private int allowedLength;
-	private boolean withCycles;
+	private Touring touring;
 }
