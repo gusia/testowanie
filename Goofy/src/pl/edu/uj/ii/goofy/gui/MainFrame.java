@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -25,16 +26,19 @@ import javax.swing.JComboBox;
 import javax.swing.JScrollPane;
 import javax.swing.JList;
 
+import pl.edu.uj.ii.goofy.EdgeIdGenerator;
+import java.awt.Panel;
+
 public class MainFrame extends JFrame {
 
 	private static final long serialVersionUID = 740477122217644965L;
 	private List<String> wierzcholkiPoczatkowe = new LinkedList<String>();
 	private List<String> wierzcholkiKoncowe = new LinkedList<String>();
 	private JPanel contentPane;
-	private JPanel panel;
 	private DirectedSparseGraph<String, Integer> graf;
 	private Layout<String, Integer> layout;
-	private VisualizationServer<String, Integer> vv;
+	BasicVisualizationServer<String,Integer> vv;
+	private JComboBox comboBox;
 	
 	
 	public List<String> getWierzcholkiPoczatkowe() {
@@ -74,16 +78,16 @@ public class MainFrame extends JFrame {
 	public MainFrame() {
 		graf = new DirectedSparseGraph<String, Integer>();
 		layout = new CircleLayout<String, Integer>(graf);
-		layout.setSize(new Dimension(300, 400));
+		//layout.setSize(new Dimension(300, 400));
 		vv = new BasicVisualizationServer<String, Integer>(layout);
-		((JComponent) vv).setPreferredSize(new Dimension(300, 500));
+		//this.pack();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 881, 614);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(new MigLayout("", "[::150,fill][::150,fill][fill][::200,fill][::700,grow]", "[fill][][][][][grow][]"));
-
+		test();
 		JButton btnDodajWierzchoki = new JButton("Dodaj wierzchołki");
 		btnDodajWierzchoki.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -91,10 +95,6 @@ public class MainFrame extends JFrame {
 			}
 		});
 		contentPane.add(btnDodajWierzchoki, "cell 0 0 4 1");
-
-		panel = new JPanel();
-		contentPane.add(panel, "cell 4 0 1 7,grow");
-		panel.add((Component) vv);
 		
 		JButton btnWierzchokiPocztkowekocowe = new JButton(
 				"Oznacz wierzchołki początkowe/końcowe");
@@ -103,7 +103,10 @@ public class MainFrame extends JFrame {
 				oznaczPoczatkoweKoncoweWierzcholki();			
 			}
 		});
+		
+		JPanel panel = new JPanel();
 		contentPane.add(btnWierzchokiPocztkowekocowe, "cell 0 1 4 1");
+		contentPane.add(vv,"cell 4 0 1 7,grow");
 
 		JButton btnDodajKrawdzie = new JButton("Dodaj krawędzie");
 		btnDodajKrawdzie.addActionListener(new ActionListener() {
@@ -116,10 +119,17 @@ public class MainFrame extends JFrame {
 		JLabel lblNewLabel = new JLabel("Kryterium:");
 		contentPane.add(lblNewLabel, "cell 0 3,alignx trailing");
 		
-		JComboBox comboBox = new JComboBox();
+		comboBox = new JComboBox();
 		contentPane.add(comboBox, "cell 1 3 2 1,growx");
+		comboBox.setModel(new DefaultComboBoxModel());
+		dodajDoComboBox();
 		
 		JButton btnNewButton = new JButton("Pokaż");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				pokazWymaganiaISciezki();
+			}
+		});
 		contentPane.add(btnNewButton, "cell 3 3,growx");
 		
 		JLabel lblNewLabel_1 = new JLabel("Wymagania testowe:");
@@ -151,7 +161,7 @@ public class MainFrame extends JFrame {
 		WierzcholkiFrame wf = new WierzcholkiFrame(this);
 		wf.setModal(true);
 		wf.setVisible(true);
-		// layout.reset();
+		((VisualizationServer<String, Integer>) graf).repaint();
 	}
 
 	void dodajKrawedzie() {
@@ -164,6 +174,35 @@ public class MainFrame extends JFrame {
 		PoczatkoweFrame pf = new PoczatkoweFrame(this);
 		pf.setVisible(true);
 		pf.setModal(true);				
+	}
+	
+	void test (){
+		graf.addVertex("a");
+		graf.addVertex("b");
+		graf.addVertex("c");
+		graf.addVertex("d");
+		
+		EdgeIdGenerator eig = EdgeIdGenerator.getInstance();
+		
+		graf.addEdge(eig.getId(), "a","b");
+		graf.addEdge(eig.getId(), "d","c");
+		graf.addEdge(eig.getId(), "b","c");
+		graf.addEdge(eig.getId(), "d","a");
+		graf.addEdge(eig.getId(), "d","d");
+		vv.repaint();
+		vv.setVisible(true);
+		
+	}
+	
+	void dodajDoComboBox(){
+		((DefaultComboBoxModel)comboBox.getModel()).addElement("Wierzchołkowe");
+		((DefaultComboBoxModel)comboBox.getModel()).addElement("Krawędziowe");
+		((DefaultComboBoxModel)comboBox.getModel()).addElement("Par krawędzi");
+		((DefaultComboBoxModel)comboBox.getModel()).addElement("Ścieżki doskonałe");
+	}
+	
+	void pokazWymaganiaISciezki(){
+		
 	}
 
 }
