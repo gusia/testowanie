@@ -1,8 +1,12 @@
 package pl.edu.uj.ii.goofy.gui;
 
+import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.Paint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -17,10 +21,11 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 import net.miginfocom.swing.MigLayout;
+
+import org.apache.commons.collections15.Transformer;
+
 import pl.edu.uj.ii.goofy.EdgeIdGenerator;
 import pl.edu.uj.ii.goofy.MultiMap;
 import pl.edu.uj.ii.goofy.algorithm.coverage.EdgeCoverage;
@@ -30,9 +35,10 @@ import pl.edu.uj.ii.goofy.algorithm.coverage.PrimePathsCoverage;
 import pl.edu.uj.ii.goofy.algorithm.coverage.TestRequirementInt;
 import pl.edu.uj.ii.goofy.algorithm.testpaths.TestPathGenerator;
 import pl.edu.uj.ii.goofy.algorithm.testpaths.Touring;
-import edu.uci.ics.jung.algorithms.layout.FRLayout;
+import edu.uci.ics.jung.algorithms.layout.KKLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
+import edu.uci.ics.jung.graph.util.Pair;
 import edu.uci.ics.jung.visualization.GraphZoomScrollPane;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
@@ -93,7 +99,7 @@ public class MainFrame extends JFrame {
 		graf = new DirectedSparseGraph<String, Integer>();
 		//layout = new CircleLayout<String, Integer>(graf);
 		//layout.setSize(new Dimension(300, 400));
-		vv = new VisualizationViewer (new FRLayout(graf));//new BasicVisualizationServer<String, Integer>(layout);
+		vv = new VisualizationViewer (new KKLayout(graf));//new BasicVisualizationServer<String, Integer>(layout);
 		//this.pack();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 881, 614);
@@ -164,14 +170,14 @@ public class MainFrame extends JFrame {
 		contentPane.add(scrollPane, "cell 0 6 2 1,grow");
 		
 
-		JList list = new JList();
-		list.addListSelectionListener(new ListSelectionListener() {
-			public void valueChanged(ListSelectionEvent arg0) {
-				//funkcja do zmiany Wymagan na grafie
+		list = new JList();
+		list.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				try {
+					selectPath((LinkedList<String>) ((DefaultListModel)list.getModel()).get(list.getSelectedIndex()));
+				} catch (Exception ex) { }
 			}
 		});
-
-		list = new JList();
 		list.setModel(new DefaultListModel());
 
 		scrollPane.setViewportView(list);
@@ -179,17 +185,54 @@ public class MainFrame extends JFrame {
 		contentPane.add(scrollPane_1, "cell 2 6 2 1,grow");
 		
 
-		JList list_1 = new JList();
-		list_1.addListSelectionListener(new ListSelectionListener() {
-			public void valueChanged(ListSelectionEvent arg0) {
-				//funkcja do zm sciezek na grafieS
+		list_1 = new JList();
+		list_1.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				try {
+					selectPath((LinkedList<String>) ((DefaultListModel)list_1.getModel()).get(list_1.getSelectedIndex()));
+				} catch (Exception ex) { }
 			}
 		});
-
-		list_1 = new JList();
 		list_1.setModel(new DefaultListModel());
 		scrollPane_1.setViewportView(list_1);
 	}
+
+	void selectPath(final LinkedList<String> path) {
+		Transformer<String, Paint> vertexPaint = new Transformer<String, Paint>() {
+
+			@Override
+			public Paint transform(String node) {
+				if (path.contains(node)) {
+					return Color.GREEN;
+				} else {
+					return Color.RED;
+				}
+			}
+			
+		};
+		
+		Transformer<Integer, Paint> edgePaint = new Transformer<Integer, Paint>() {
+
+			@Override
+			public Paint transform(Integer edge) {
+				Pair<String> e = graf.getEndpoints(edge);
+				String n1 = e.getFirst();
+				String n2 = e.getSecond();
+				
+				if (path.contains(n1) && path.contains(n2)) {
+					return Color.GREEN;
+				} else {
+					return Color.BLACK;
+				}
+			}
+			
+		};
+		
+		vv.getRenderContext().setEdgeDrawPaintTransformer(edgePaint);
+		vv.getRenderContext().setVertexFillPaintTransformer(vertexPaint);
+		vv.repaint();
+	}
+
 
 	void dodajWierzcholki() {
 		WierzcholkiFrame wf = new WierzcholkiFrame(this);
