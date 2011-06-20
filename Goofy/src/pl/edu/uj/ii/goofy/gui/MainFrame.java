@@ -1,5 +1,6 @@
 package pl.edu.uj.ii.goofy.gui;
 
+import java.awt.ComponentOrientation;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -119,6 +120,8 @@ public class MainFrame extends JFrame {
 		});
 		
 		panel = new GraphZoomScrollPane(vv);
+		panel.setIgnoreRepaint(false);
+		panel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		panel.setAutoscrolls(true);
 		vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller<String>());
 		vv.getRenderer().getVertexLabelRenderer().setPosition(Position.CNTR);
@@ -195,14 +198,19 @@ public class MainFrame extends JFrame {
 		WierzcholkiFrame wf = new WierzcholkiFrame(this);
 		wf.setModal(true);
 		wf.setVisible(true);
+		panel.doLayout();
 		panel.repaint();
+		
 	}
 
 	void dodajKrawedzie() {
 		KrawedzieFrame kf = new KrawedzieFrame(this);
-		kf.setVisible(true);
 		kf.setModal(true);
+		kf.setVisible(true);
+		panel.doLayout();
 		panel.repaint();
+		
+		//panel.setVisible(true);
 	}
 	
 	void oznaczPoczatkoweKoncoweWierzcholki(){
@@ -224,8 +232,9 @@ public class MainFrame extends JFrame {
 		graf.addEdge(eig.getId(), "b","c");
 		graf.addEdge(eig.getId(), "d","a");
 		graf.addEdge(eig.getId(), "d","d");
-		vv.repaint();
-		vv.setVisible(true);
+		//.setVisible(true);
+		//vv.setModal(true);
+		//vv.repaint();
 		
 	}
 	

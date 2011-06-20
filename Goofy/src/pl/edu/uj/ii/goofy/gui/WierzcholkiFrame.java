@@ -54,7 +54,8 @@ public class WierzcholkiFrame extends JDialog {
 		setContentPane(contentPane);
 		contentPane.setLayout(new MigLayout("", "[210px][6px,grow]", "[15px][19px][][15px][121px,fill][][25px]"));
 		
-		JLabel lblWpiszDodawaneusuwaneWierzchoki = new JLabel("Wpisz nazwy dodawanych wierzchołków:");
+		JLabel lblWpiszDodawaneusuwaneWierzchoki = new JLabel("Wpisz numery dodawanych wierzchołków:");
+				
 		contentPane.add(lblWpiszDodawaneusuwaneWierzchoki, "cell 0 0 2 1,growx,aligny top");
 		
 		textField = new JTextField();
@@ -68,6 +69,8 @@ public class WierzcholkiFrame extends JDialog {
 		});
 		contentPane.add(textField, "cell 0 1 2 1,growx,aligny top");
 		textField.setColumns(10);
+		textField.setToolTipText("Wpisz tylko liczby!");
+		
 		
 		JButton btnNewButton = new JButton("Dodaj");
 		btnNewButton.addActionListener(new ActionListener() {
