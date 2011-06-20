@@ -39,7 +39,6 @@ import pl.edu.uj.ii.goofy.algorithm.coverage.TestRequirementInt;
 import pl.edu.uj.ii.goofy.algorithm.testpaths.TestPathGenerator;
 import pl.edu.uj.ii.goofy.algorithm.testpaths.Touring;
 import edu.uci.ics.jung.algorithms.layout.KKLayout;
-import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.util.Pair;
 import edu.uci.ics.jung.visualization.GraphZoomScrollPane;
@@ -54,10 +53,10 @@ public class MainFrame extends JFrame {
 	private List<Node> wierzcholkiKoncowe = new LinkedList<Node>();
 	private JPanel contentPane;
 	private DirectedSparseGraph<Node, Edge> graf;
-	private Layout<Node, Edge> layout;
+	//private Layout<Node, Edge> layout;
 	//BasicVisualizationServer<String,Integer> vv;
 	GraphZoomScrollPane panel;
-	VisualizationViewer vv;
+	VisualizationViewer<Node, Edge> vv;
 	private JComboBox comboBox;
 	private JList list;
 	private JList list_1;
@@ -102,7 +101,7 @@ public class MainFrame extends JFrame {
 		graf = new DirectedSparseGraph<Node, Edge>();
 		//layout = new CircleLayout<String, Integer>(graf);
 		//layout.setSize(new Dimension(300, 400));
-		vv = new VisualizationViewer (new KKLayout(graf));//new BasicVisualizationServer<String, Integer>(layout);
+		vv = new VisualizationViewer<Node, Edge> (new KKLayout<Node, Edge>(graf));//new BasicVisualizationServer<String, Integer>(layout);
 		//this.pack();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 881, 614);
@@ -131,7 +130,7 @@ public class MainFrame extends JFrame {
 		panel.setIgnoreRepaint(false);
 		panel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		panel.setAutoscrolls(true);
-		vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller<String>());
+		vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller<Node>());
 		vv.getRenderer().getVertexLabelRenderer().setPosition(Position.CNTR);
 	
 		
@@ -177,6 +176,7 @@ public class MainFrame extends JFrame {
 
 		list = new JList();
 		list.addMouseListener(new MouseAdapter() {
+			@SuppressWarnings("unchecked")
 			public void mouseClicked(MouseEvent e) {
 				try {
 					selectPath((LinkedList<Node>) ((DefaultListModel)list.getModel()).get(list.getSelectedIndex()));
@@ -192,6 +192,7 @@ public class MainFrame extends JFrame {
 
 		list_1 = new JList();
 		list_1.addMouseListener(new MouseAdapter() {
+			@SuppressWarnings("unchecked")
 			public void mouseClicked(MouseEvent e) {
 				try {
 					selectPath((LinkedList<Node>) ((DefaultListModel)list_1.getModel()).get(list_1.getSelectedIndex()));

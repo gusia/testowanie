@@ -19,7 +19,8 @@ import pl.edu.uj.ii.goofy.algorithm.Node;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 
 public class PoczatkoweFrame extends JDialog {
-
+	
+	private static final long serialVersionUID = 4826091876368449315L;
 	private JPanel contentPane;
 	MainFrame mFrame;
 	DirectedSparseGraph<Node, Edge> graf;
@@ -170,6 +171,7 @@ public class PoczatkoweFrame extends JDialog {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void zapiszZmiany() {
 		Enumeration <Node> enumer = (Enumeration<Node>) ((DefaultListModel) list.getModel()).elements();
 		mFrame.getWierzcholkiPoczatkowe().clear();
