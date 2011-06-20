@@ -18,16 +18,15 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
 import net.miginfocom.swing.MigLayout;
-import pl.edu.uj.ii.goofy.EdgeIdGenerator;
+import pl.edu.uj.ii.goofy.algorithm.Edge;
 import pl.edu.uj.ii.goofy.algorithm.Node;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.util.Pair;
 
 public class KrawedzieFrame extends JDialog {
-	EdgeIdGenerator eig = EdgeIdGenerator.getInstance();
 	private JPanel contentPane;
 	MainFrame mFrame;
-	DirectedSparseGraph<Node, Integer> graf;
+	DirectedSparseGraph<Node, Edge> graf;
 	HashSet<Pair<Node>> do_dodania;
 	HashSet<Pair<Node>> do_usuniecia;
 	private JList list;
@@ -119,7 +118,7 @@ public class KrawedzieFrame extends JDialog {
 		});
 		scrollPane_2.setViewportView(list_2);
 		list_2.setModel(new DefaultListModel());
-		for (Integer krawedz : graf.getEdges()) {
+		for (Edge krawedz : graf.getEdges()) {
 			Pair<Node> el = graf.getEndpoints(krawedz);
 			((DefaultListModel) list_2.getModel()).addElement(el);
 
@@ -194,12 +193,12 @@ public class KrawedzieFrame extends JDialog {
 
 	private void zapiszKrawedzieDoGrafu() {
 		for (Pair<Node> iter : do_usuniecia) {
-			Integer id = graf.findEdge(iter.getFirst(), iter.getSecond());
-			graf.removeEdge(id);
+			Edge edge = graf.findEdge(iter.getFirst(), iter.getSecond());
+			graf.removeEdge(edge);
 		}
 
 		for (Pair<Node> iter : do_dodania) {
-			graf.addEdge(eig.getId(), iter);
+			graf.addEdge(new Edge(iter.getFirst().getId(), iter.getSecond().getId()), iter.getFirst(), iter.getSecond());
 		}
 		dispose();
 	}

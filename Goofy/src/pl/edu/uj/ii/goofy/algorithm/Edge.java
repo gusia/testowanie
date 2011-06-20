@@ -3,21 +3,22 @@ package pl.edu.uj.ii.goofy.algorithm;
 import java.util.Collection;
 import java.util.LinkedList;
 
-public class Node {
-	private final short id;
+public class Edge {
+	
+	private final int id;
 	private LinkedList<DuDescription> usages;
 	
-	public Node(short id, Collection<DuDescription> usages) {
-		this.id = id;
+	public Edge(short first, short second, Collection<DuDescription> usages) {
+		this.id = calcId(first, second);
 		this.usages = new LinkedList<DuDescription>(usages);
 	}
 	
-	public Node(short id) {
-		this.id = id;
+	public Edge(short first, short second) {
+		this.id = calcId(first, second);
 		this.usages = new LinkedList<DuDescription>();
 	}
 	
-	public short getId() {
+	public int getId() {
 		return id;
 	}
 
@@ -36,11 +37,11 @@ public class Node {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj.getClass() != Node.class) {
+		if (obj.getClass() != Edge.class) {
 			return false;
 		}
 		
-		return this.id == ((Node)obj).id;
+		return this.id == ((Edge)obj).id;
 	}
 
 	@Override
@@ -48,5 +49,7 @@ public class Node {
 		return Integer.toString(id);
 	}
 	
-	
+	private static synchronized int calcId(short first, short second) {
+		return ((int)first << 16) + second;
+	}
 }

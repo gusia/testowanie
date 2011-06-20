@@ -5,7 +5,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
-import java.util.Iterator;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -20,6 +19,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 
 import net.miginfocom.swing.MigLayout;
+import pl.edu.uj.ii.goofy.algorithm.Edge;
 import pl.edu.uj.ii.goofy.algorithm.Node;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 
@@ -29,7 +29,7 @@ public class WierzcholkiFrame extends JDialog {
 	private JTextField textField;
 	private JList list;
 	MainFrame mFrame;
-	DirectedSparseGraph<Node, Integer> graf;
+	DirectedSparseGraph<Node, Edge> graf;
 	HashSet<Node> do_dodania;
 	HashSet<Node> do_usuniecia;
 
@@ -125,10 +125,10 @@ public class WierzcholkiFrame extends JDialog {
 	}
 	void dodajWierzcholek(){
 		String el = textField.getText();
-		int id;
+		short id;
 		
 		try {
-			id = Integer.parseInt(el);
+			id = Short.parseShort(el);
 		} catch (Exception e) {
 			return;
 		}
@@ -151,7 +151,7 @@ public class WierzcholkiFrame extends JDialog {
 		try {
 			Integer index = list.getSelectedIndex();
 			String el = (String)((DefaultListModel)list.getModel()).getElementAt(index);
-			int id = Integer.parseInt(el);
+			short id = Short.parseShort(el);
 			((DefaultListModel)list.getModel()).removeElementAt(index);
 			if (do_dodania.contains(el)){
 				do_dodania.remove(el);

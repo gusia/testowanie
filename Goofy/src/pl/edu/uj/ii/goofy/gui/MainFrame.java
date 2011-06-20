@@ -26,8 +26,8 @@ import net.miginfocom.swing.MigLayout;
 
 import org.apache.commons.collections15.Transformer;
 
-import pl.edu.uj.ii.goofy.EdgeIdGenerator;
 import pl.edu.uj.ii.goofy.MultiMap;
+import pl.edu.uj.ii.goofy.algorithm.Edge;
 import pl.edu.uj.ii.goofy.algorithm.Node;
 import pl.edu.uj.ii.goofy.algorithm.coverage.EdgeCoverage;
 import pl.edu.uj.ii.goofy.algorithm.coverage.EdgePairCoverage;
@@ -51,8 +51,8 @@ public class MainFrame extends JFrame {
 	private List<Node> wierzcholkiPoczatkowe = new LinkedList<Node>();
 	private List<Node> wierzcholkiKoncowe = new LinkedList<Node>();
 	private JPanel contentPane;
-	private DirectedSparseGraph<Node, Integer> graf;
-	private Layout<Node, Integer> layout;
+	private DirectedSparseGraph<Node, Edge> graf;
+	private Layout<Node, Edge> layout;
 	//BasicVisualizationServer<String,Integer> vv;
 	GraphZoomScrollPane panel;
 	VisualizationViewer vv;
@@ -72,7 +72,7 @@ public class MainFrame extends JFrame {
 	}
 
 
-	public DirectedSparseGraph<Node, Integer> getGraf() {
+	public DirectedSparseGraph<Node, Edge> getGraf() {
 		return graf;
 	}
 
@@ -97,7 +97,7 @@ public class MainFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public MainFrame() {
-		graf = new DirectedSparseGraph<Node, Integer>();
+		graf = new DirectedSparseGraph<Node, Edge>();
 		//layout = new CircleLayout<String, Integer>(graf);
 		//layout.setSize(new Dimension(300, 400));
 		vv = new VisualizationViewer (new KKLayout(graf));//new BasicVisualizationServer<String, Integer>(layout);
@@ -212,10 +212,10 @@ public class MainFrame extends JFrame {
 			
 		};
 		
-		Transformer<Integer, Paint> edgePaint = new Transformer<Integer, Paint>() {
+		Transformer<Edge, Paint> edgePaint = new Transformer<Edge, Paint>() {
 
 			@Override
-			public Paint transform(Integer edge) {
+			public Paint transform(Edge edge) {
 				Pair<Node> e = graf.getEndpoints(edge);
 				Node n1 = e.getFirst();
 				Node n2 = e.getSecond();
@@ -284,15 +284,15 @@ public class MainFrame extends JFrame {
 		String selectedItem = (String)((DefaultComboBoxModel)comboBox.getModel()).getSelectedItem();
 		if (selectedItem == null) return;
 		
-		TestRequirementInt<Node, Integer> testRequirement;
+		TestRequirementInt<Node, Edge> testRequirement;
 		if (selectedItem == "Wierzchołkowe") {
-			testRequirement = new NodeCoverage<Node, Integer>(graf);
+			testRequirement = new NodeCoverage<Node, Edge>(graf);
 		} else if (selectedItem == "Krawędziowe") {
-			testRequirement = new EdgeCoverage<Node, Integer>(graf);
+			testRequirement = new EdgeCoverage<Node, Edge>(graf);
 		} else if (selectedItem == "Par krawędzi") {
-			testRequirement = new EdgePairCoverage<Node, Integer>(graf);
+			testRequirement = new EdgePairCoverage<Node, Edge>(graf);
 		} else if (selectedItem == "Ścieżki doskonałe") {
-			testRequirement = new PrimePathsCoverage<Node, Integer>(graf);
+			testRequirement = new PrimePathsCoverage<Node, Edge>(graf);
 		} else {
 			return;
 		}
@@ -306,7 +306,7 @@ public class MainFrame extends JFrame {
 		}
 		
 		Touring touring = chckbxNewCheckBox.isSelected() ? Touring.SidetripsAndDetours : Touring.OnlyTouring;
-		TestPathGenerator<Node, Integer> gen = new TestPathGenerator<Node, Integer>(graf, wierzcholkiPoczatkowe, wierzcholkiKoncowe, touring);
+		TestPathGenerator<Node, Edge> gen = new TestPathGenerator<Node, Edge>(graf, wierzcholkiPoczatkowe, wierzcholkiKoncowe, touring);
 		gen.getAllPaths();
 		MultiMap<LinkedList<Node>, LinkedList<Node>> map = gen.reducePaths(paths);
 		
