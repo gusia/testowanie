@@ -1,5 +1,9 @@
 package pl.edu.uj.ii.goofy.gui;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.HashSet;
 
 import javax.swing.DefaultListModel;
@@ -13,23 +17,19 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
-import pl.edu.uj.ii.goofy.EdgeIdGenerator;
-
 import net.miginfocom.swing.MigLayout;
+import pl.edu.uj.ii.goofy.EdgeIdGenerator;
+import pl.edu.uj.ii.goofy.algorithm.Node;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.util.Pair;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 public class KrawedzieFrame extends JDialog {
 	EdgeIdGenerator eig = EdgeIdGenerator.getInstance();
 	private JPanel contentPane;
 	MainFrame mFrame;
-	DirectedSparseGraph<String, Integer> graf;
-	HashSet<Pair<String>> do_dodania;
-	HashSet<Pair<String>> do_usuniecia;
+	DirectedSparseGraph<Node, Integer> graf;
+	HashSet<Pair<Node>> do_dodania;
+	HashSet<Pair<Node>> do_usuniecia;
 	private JList list;
 	private JList list_1;
 	private JList list_2;
@@ -40,8 +40,8 @@ public class KrawedzieFrame extends JDialog {
 	public KrawedzieFrame(MainFrame _mFrame) {
 		mFrame = _mFrame;
 		graf = mFrame.getGraf();
-		do_dodania = new HashSet<Pair<String>>();
-		do_usuniecia = new HashSet<Pair<String>>();
+		do_dodania = new HashSet<Pair<Node>>();
+		do_usuniecia = new HashSet<Pair<Node>>();
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 391);
 		contentPane = new JPanel();
@@ -86,7 +86,7 @@ public class KrawedzieFrame extends JDialog {
 		});
 		scrollPane_1.setViewportView(list_1);
 		list_1.setModel(new DefaultListModel());
-		for (String wierzcholek : graf.getVertices()) {
+		for (Node wierzcholek : graf.getVertices()) {
 			((DefaultListModel) list.getModel()).addElement(wierzcholek);
 			((DefaultListModel) list_1.getModel()).addElement(wierzcholek);
 		}
@@ -120,7 +120,7 @@ public class KrawedzieFrame extends JDialog {
 		scrollPane_2.setViewportView(list_2);
 		list_2.setModel(new DefaultListModel());
 		for (Integer krawedz : graf.getEdges()) {
-			Pair<String> el = graf.getEndpoints(krawedz);
+			Pair<Node> el = graf.getEndpoints(krawedz);
 			((DefaultListModel) list_2.getModel()).addElement(el);
 
 		}
@@ -152,14 +152,14 @@ public class KrawedzieFrame extends JDialog {
 
 	private void dodajKrawedz() {
 		try {
-			Pair<String> el;
+			Pair<Node> el;
 			Integer index1 = list.getSelectedIndex();
-			String str1 = (String) ((DefaultListModel) list.getModel())
+			Node str1 = (Node) ((DefaultListModel) list.getModel())
 					.getElementAt(index1);
 			Integer index2 = list_1.getSelectedIndex();
-			String str2 = (String) ((DefaultListModel) list_1.getModel())
+			Node str2 = (Node) ((DefaultListModel) list_1.getModel())
 					.getElementAt(index2);
-			el = new Pair<String>(str1, str2);
+			el = new Pair<Node>(str1, str2);
 			if (!((DefaultListModel) list_2.getModel()).contains(el)) {
 				((DefaultListModel) list_2.getModel()).addElement(el);
 				if (do_usuniecia.contains(el)) {
@@ -176,9 +176,9 @@ public class KrawedzieFrame extends JDialog {
 
 	private void usunKrawedz() {
 		try {
-			Pair<String> el;
+			Pair<Node> el;
 			Integer index = list_2.getSelectedIndex();
-			el = (Pair<String>) ((DefaultListModel) list_2.getModel())
+			el = (Pair<Node>) ((DefaultListModel) list_2.getModel())
 					.getElementAt(index);
 			((DefaultListModel) list_2.getModel()).removeElementAt(index);
 			if (do_dodania.contains(el)) {
@@ -193,12 +193,12 @@ public class KrawedzieFrame extends JDialog {
 	}
 
 	private void zapiszKrawedzieDoGrafu() {
-		for (Pair<String> iter : do_usuniecia) {
+		for (Pair<Node> iter : do_usuniecia) {
 			Integer id = graf.findEdge(iter.getFirst(), iter.getSecond());
 			graf.removeEdge(id);
 		}
 
-		for (Pair<String> iter : do_dodania) {
+		for (Pair<Node> iter : do_dodania) {
 			graf.addEdge(eig.getId(), iter);
 		}
 		dispose();

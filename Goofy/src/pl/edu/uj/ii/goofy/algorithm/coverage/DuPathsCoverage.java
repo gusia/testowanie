@@ -3,6 +3,8 @@ package pl.edu.uj.ii.goofy.algorithm.coverage;
 import java.util.Hashtable;
 import java.util.LinkedList;
 
+import pl.edu.uj.ii.goofy.algorithm.DuDescription;
+import pl.edu.uj.ii.goofy.algorithm.DuDescriptionType;
 import edu.uci.ics.jung.graph.Graph;
 
 public class DuPathsCoverage<N, E> implements TestRequirementInt<N, E> {

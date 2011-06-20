@@ -2,10 +2,9 @@ package pl.edu.uj.ii.goofy;
 
 import java.util.Hashtable;
 import java.util.LinkedList;
-import java.util.List;
 
-import pl.edu.uj.ii.goofy.algorithm.coverage.DuDescription;
-import pl.edu.uj.ii.goofy.algorithm.coverage.DuDescriptionType;
+import pl.edu.uj.ii.goofy.algorithm.DuDescription;
+import pl.edu.uj.ii.goofy.algorithm.DuDescriptionType;
 import pl.edu.uj.ii.goofy.algorithm.coverage.DuPathsCoverage;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.Graph;
