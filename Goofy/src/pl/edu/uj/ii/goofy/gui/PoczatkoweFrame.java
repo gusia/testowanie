@@ -14,13 +14,15 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
 import net.miginfocom.swing.MigLayout;
+import pl.edu.uj.ii.goofy.algorithm.Edge;
+import pl.edu.uj.ii.goofy.algorithm.Node;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 
 public class PoczatkoweFrame extends JDialog {
 
 	private JPanel contentPane;
 	MainFrame mFrame;
-	DirectedSparseGraph<String, Integer> graf;
+	DirectedSparseGraph<Node, Edge> graf;
 	private JList list_2;
 	private JList list_1;
 	private JList list;
@@ -62,7 +64,7 @@ public class PoczatkoweFrame extends JDialog {
 		scrollPane.setViewportView(list);
 		contentPane.add(btnNewButton, "cell 1 1,growx,aligny bottom");
 		list.setModel(new DefaultListModel());
-		for (String wierzcholek : mFrame.getWierzcholkiPoczatkowe()) {
+		for (Node wierzcholek : mFrame.getWierzcholkiPoczatkowe()) {
 			((DefaultListModel) list.getModel()).addElement(wierzcholek);
 		}
 
@@ -80,7 +82,7 @@ public class PoczatkoweFrame extends JDialog {
 		scrollPane_1.setViewportView(list_1);
 		contentPane.add(btnNewButton_2, "cell 3 1,growx,aligny bottom");
 		list_1.setModel(new DefaultListModel());
-		for (String wierzcholek : graf.getVertices()) {
+		for (Node wierzcholek : graf.getVertices()) {
 			((DefaultListModel) list_1.getModel()).addElement(wierzcholek);
 		}
 
@@ -98,7 +100,7 @@ public class PoczatkoweFrame extends JDialog {
 		scrollPane_2.setViewportView(list_2);
 		contentPane.add(btnNewButton_1, "cell 1 2,growx,aligny top");
 		list_2.setModel(new DefaultListModel());
-		for (String wierzcholek : mFrame.getWierzcholkiKoncowe()) {
+		for (Node wierzcholek : mFrame.getWierzcholkiKoncowe()) {
 			((DefaultListModel) list_2.getModel()).addElement(wierzcholek);
 		}
 
@@ -130,10 +132,10 @@ public class PoczatkoweFrame extends JDialog {
 	private void dodajDoKoncowych() {
 		try {
 			Integer index = list_1.getSelectedIndex();
-			String el = (String) ((DefaultListModel) list_1.getModel())
+			Node node = (Node) ((DefaultListModel) list_1.getModel())
 					.getElementAt(index);
-			if (!((DefaultListModel) list_2.getModel()).contains(el)) {
-				((DefaultListModel) list_2.getModel()).addElement(el);
+			if (!((DefaultListModel) list_2.getModel()).contains(node)) {
+				((DefaultListModel) list_2.getModel()).addElement(node);
 			}
 		} catch (Exception e) {
 		}
@@ -151,10 +153,10 @@ public class PoczatkoweFrame extends JDialog {
 	private void dodajDoPocztakowych() {
 		try {
 			Integer index = list_1.getSelectedIndex();
-			String el = (String) ((DefaultListModel) list_1.getModel())
+			Node node = (Node) ((DefaultListModel) list_1.getModel())
 					.getElementAt(index);
-			if (!((DefaultListModel) list.getModel()).contains(el)) {
-				((DefaultListModel) list.getModel()).addElement(el);
+			if (!((DefaultListModel) list.getModel()).contains(node)) {
+				((DefaultListModel) list.getModel()).addElement(node);
 			}
 		} catch (Exception e) {
 		}
@@ -169,22 +171,22 @@ public class PoczatkoweFrame extends JDialog {
 	}
 
 	private void zapiszZmiany() {
-		Enumeration <String> enumer = (Enumeration<String>) ((DefaultListModel) list.getModel()).elements();
+		Enumeration <Node> enumer = (Enumeration<Node>) ((DefaultListModel) list.getModel()).elements();
 		mFrame.getWierzcholkiPoczatkowe().clear();
 		mFrame.getWierzcholkiKoncowe().clear();
-		while (enumer.hasMoreElements()){
+		while (enumer.hasMoreElements()) {
 			mFrame.getWierzcholkiPoczatkowe().add(enumer.nextElement());
 		}
-		enumer = (Enumeration<String>) ((DefaultListModel) list_2.getModel()).elements();
+		enumer = (Enumeration<Node>) ((DefaultListModel) list_2.getModel()).elements();
 		while (enumer.hasMoreElements()){
 			mFrame.getWierzcholkiKoncowe().add(enumer.nextElement());
 		}
 		System.out.println("Początkowe: \n");
-		for (String s : mFrame.getWierzcholkiPoczatkowe()){
+		for (Node s : mFrame.getWierzcholkiPoczatkowe()){
 			System.out.print(s +", ");
 		}
 		System.out.println("Końcowe: \n");
-		for (String s : mFrame.getWierzcholkiKoncowe()){
+		for (Node s : mFrame.getWierzcholkiKoncowe()){
 			System.out.print(s +", ");
 		}
 		

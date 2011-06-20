@@ -1,18 +1,14 @@
 package pl.edu.uj.ii.goofy.gui;
 
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -22,10 +18,10 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 
-import edu.uci.ics.jung.graph.DirectedSparseGraph;
-import edu.uci.ics.jung.graph.Graph;
-
 import net.miginfocom.swing.MigLayout;
+import pl.edu.uj.ii.goofy.algorithm.Edge;
+import pl.edu.uj.ii.goofy.algorithm.Node;
+import edu.uci.ics.jung.graph.DirectedSparseGraph;
 
 public class WierzcholkiFrame extends JDialog {
 
@@ -33,9 +29,9 @@ public class WierzcholkiFrame extends JDialog {
 	private JTextField textField;
 	private JList list;
 	MainFrame mFrame;
-	DirectedSparseGraph<String, Integer> graf;
-	HashSet<String> do_dodania;
-	HashSet<String> do_usuniecia;
+	DirectedSparseGraph<Node, Edge> graf;
+	HashSet<Node> do_dodania;
+	HashSet<Node> do_usuniecia;
 
 	
 
@@ -45,8 +41,8 @@ public class WierzcholkiFrame extends JDialog {
 	public WierzcholkiFrame(MainFrame _mFrame) {
 		mFrame = _mFrame;
 		graf = mFrame.getGraf();
-		do_dodania = new HashSet<String>();
-		do_usuniecia = new HashSet<String>();
+		do_dodania = new HashSet<Node>();
+		do_usuniecia = new HashSet<Node>();
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -100,7 +96,7 @@ public class WierzcholkiFrame extends JDialog {
 		System.out.println(graf.getVertexCount());
 		
 		
-		for (String wierzcholek : graf.getVertices()) {
+		for (Node wierzcholek : graf.getVertices()) {
 			((DefaultListModel)list.getModel()).addElement(wierzcholek);
 		}
 		
@@ -132,14 +128,21 @@ public class WierzcholkiFrame extends JDialog {
 	}
 	void dodajWierzcholek(){
 		String el = textField.getText();
-		if (el.equals("")|| el ==null || el.charAt(0) == ' ') return;
+		short id;
+		
+		try {
+			id = Short.parseShort(el);
+		} catch (Exception e) {
+			return;
+		}
+		
 		if (!((DefaultListModel)list.getModel()).contains(el)){
 			((DefaultListModel)list.getModel()).addElement(el);
 			if (do_usuniecia.contains(el)){
 				do_usuniecia.remove(el);
 			}
 			else {
-				do_dodania.add(el);
+				do_dodania.add(new Node(id));
 			}
 			
 			textField.setText("");
@@ -151,12 +154,13 @@ public class WierzcholkiFrame extends JDialog {
 		try {
 			Integer index = list.getSelectedIndex();
 			String el = (String)((DefaultListModel)list.getModel()).getElementAt(index);
+			short id = Short.parseShort(el);
 			((DefaultListModel)list.getModel()).removeElementAt(index);
 			if (do_dodania.contains(el)){
 				do_dodania.remove(el);
 			}
 			else {
-				do_usuniecia.add(el);
+				do_usuniecia.add(new Node(id));
 			}
 		} catch (Exception e){
 			
@@ -164,18 +168,14 @@ public class WierzcholkiFrame extends JDialog {
 	}
 	
 	void zapiszWierzcholkiDoGrafu (){
-		Iterator<String> iter = do_usuniecia.iterator();
-		while (iter.hasNext()){
-			String vertex = iter.next();
-			graf.removeVertex(vertex);
-			System.out.print("a ");
+		for (Node node : do_usuniecia) {
+			graf.removeVertex(node);
 		}
-		iter = do_dodania.iterator();
-		while (iter.hasNext()){
-			String vertex = iter.next();
-			graf.addVertex(vertex);
-			System.out.print("b ");
+		
+		for (Node node : do_dodania) {
+			graf.addVertex(node);
 		}
+		
 		dispose();
 	}
 }

@@ -1,4 +1,4 @@
-package pl.edu.uj.ii.goofy.algorithm.coverage;
+package pl.edu.uj.ii.goofy.algorithm;
 
 public class DuDescription {
 	private String name;

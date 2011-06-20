@@ -2,10 +2,9 @@ package pl.edu.uj.ii.goofy;
 
 import java.util.Hashtable;
 import java.util.LinkedList;
-import java.util.List;
 
-import pl.edu.uj.ii.goofy.algorithm.coverage.DuDescription;
-import pl.edu.uj.ii.goofy.algorithm.coverage.DuDescriptionType;
+import pl.edu.uj.ii.goofy.algorithm.DuDescription;
+import pl.edu.uj.ii.goofy.algorithm.DuDescriptionType;
 import pl.edu.uj.ii.goofy.algorithm.coverage.DuPathsCoverage;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.Graph;
@@ -24,16 +23,16 @@ public class TestDu {
 		graph.addVertex("7");
 		graph.addVertex("8");
 		
-		graph.addEdge(EdgeIdGenerator.getInstance().getId(), "1", "2");
-		graph.addEdge(EdgeIdGenerator.getInstance().getId(), "2", "3");
-		graph.addEdge(EdgeIdGenerator.getInstance().getId(), "3", "4");
-		graph.addEdge(EdgeIdGenerator.getInstance().getId(), "3", "5");
-		graph.addEdge(EdgeIdGenerator.getInstance().getId(), "4", "3");
-		graph.addEdge(EdgeIdGenerator.getInstance().getId(), "3", "5");
-		graph.addEdge(EdgeIdGenerator.getInstance().getId(), "5", "6");
-		graph.addEdge(EdgeIdGenerator.getInstance().getId(), "6", "7");
-		graph.addEdge(EdgeIdGenerator.getInstance().getId(), "6", "8");
-		graph.addEdge(EdgeIdGenerator.getInstance().getId(), "7", "6");
+		graph.addEdge(0, "1", "2");
+		graph.addEdge(1, "2", "3");
+		graph.addEdge(2, "3", "4");
+		graph.addEdge(3, "3", "5");
+		graph.addEdge(4, "4", "3");
+		graph.addEdge(5, "3", "5");
+		graph.addEdge(6, "5", "6");
+		graph.addEdge(7, "6", "7");
+		graph.addEdge(8, "6", "8");
+		graph.addEdge(9, "7", "6");
 		
 		Hashtable<String, LinkedList<DuDescription>> nodes = new Hashtable<String, LinkedList<DuDescription>>();
 		DuDescription description;
