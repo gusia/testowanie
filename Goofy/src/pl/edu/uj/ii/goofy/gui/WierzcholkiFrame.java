@@ -21,7 +21,7 @@ import javax.swing.border.EmptyBorder;
 import net.miginfocom.swing.MigLayout;
 import pl.edu.uj.ii.goofy.algorithm.Edge;
 import pl.edu.uj.ii.goofy.algorithm.Node;
-import edu.uci.ics.jung.graph.DirectedSparseGraph;
+import edu.uci.ics.jung.graph.Graph;
 
 public class WierzcholkiFrame extends JDialog {
 
@@ -30,7 +30,7 @@ public class WierzcholkiFrame extends JDialog {
 	private JTextField textField;
 	private JList list;
 	MainFrame mFrame;
-	DirectedSparseGraph<Node, Edge> graf;
+	Graph<Node, Edge> graf;
 	HashSet<Node> do_dodania;
 	HashSet<Node> do_usuniecia;
 
@@ -154,14 +154,13 @@ public class WierzcholkiFrame extends JDialog {
 	void usunWierzcholek(){
 		try {
 			Integer index = list.getSelectedIndex();
-			String el = (String)((DefaultListModel)list.getModel()).getElementAt(index);
-			short id = Short.parseShort(el);
+			Node node = (Node)((DefaultListModel)list.getModel()).getElementAt(index);
 			((DefaultListModel)list.getModel()).removeElementAt(index);
-			if (do_dodania.contains(el)){
-				do_dodania.remove(el);
+			if (do_dodania.contains(node)){
+				do_dodania.remove(node);
 			}
 			else {
-				do_usuniecia.add(new Node(id));
+				do_usuniecia.add(node);
 			}
 		} catch (Exception e){
 			

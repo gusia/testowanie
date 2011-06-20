@@ -20,7 +20,7 @@ import javax.swing.border.EmptyBorder;
 import net.miginfocom.swing.MigLayout;
 import pl.edu.uj.ii.goofy.algorithm.Edge;
 import pl.edu.uj.ii.goofy.algorithm.Node;
-import edu.uci.ics.jung.graph.DirectedSparseGraph;
+import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.util.Pair;
 
 public class KrawedzieFrame extends JDialog {
@@ -28,7 +28,7 @@ public class KrawedzieFrame extends JDialog {
 	private static final long serialVersionUID = -7868444654237460753L;
 	private JPanel contentPane;
 	MainFrame mFrame;
-	DirectedSparseGraph<Node, Edge> graf;
+	Graph<Node, Edge> graf;
 	HashSet<Pair<Node>> do_dodania;
 	HashSet<Pair<Node>> do_usuniecia;
 	private JList list;

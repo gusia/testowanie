@@ -2,7 +2,7 @@ package pl.edu.uj.ii.goofy.gui;
 
 
 import java.awt.Color;
-import java.awt.ComponentOrientation;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Paint;
 import java.awt.event.ActionEvent;
@@ -39,10 +39,13 @@ import pl.edu.uj.ii.goofy.algorithm.coverage.TestRequirementInt;
 import pl.edu.uj.ii.goofy.algorithm.testpaths.TestPathGenerator;
 import pl.edu.uj.ii.goofy.algorithm.testpaths.Touring;
 import edu.uci.ics.jung.algorithms.layout.KKLayout;
+import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
+import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.util.Pair;
 import edu.uci.ics.jung.visualization.GraphZoomScrollPane;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
+import edu.uci.ics.jung.visualization.control.DefaultModalGraphMouse;
 import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
 import edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position;
 
@@ -52,8 +55,8 @@ public class MainFrame extends JFrame {
 	private List<Node> wierzcholkiPoczatkowe = new LinkedList<Node>();
 	private List<Node> wierzcholkiKoncowe = new LinkedList<Node>();
 	private JPanel contentPane;
-	private DirectedSparseGraph<Node, Edge> graf;
-	//private Layout<Node, Edge> layout;
+	private Graph<Node, Edge> graf;
+	private Layout<Node, Edge> layout;
 	//BasicVisualizationServer<String,Integer> vv;
 	GraphZoomScrollPane panel;
 	VisualizationViewer<Node, Edge> vv;
@@ -73,7 +76,7 @@ public class MainFrame extends JFrame {
 	}
 
 
-	public DirectedSparseGraph<Node, Edge> getGraf() {
+	public Graph<Node, Edge> getGraf() {
 		return graf;
 	}
 
@@ -98,17 +101,12 @@ public class MainFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public MainFrame() {
-		graf = new DirectedSparseGraph<Node, Edge>();
-		//layout = new CircleLayout<String, Integer>(graf);
-		//layout.setSize(new Dimension(300, 400));
-		vv = new VisualizationViewer<Node, Edge> (new KKLayout<Node, Edge>(graf));//new BasicVisualizationServer<String, Integer>(layout);
-		//this.pack();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 881, 614);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		contentPane.setLayout(new MigLayout("", "[100:100:100,fill][100px:100px:100px,fill][100px:100px:100px,fill][100px:100px:100px,fill][::700,grow]", "[fill][][][][][][grow][]"));
+		contentPane.setLayout(new MigLayout("", "[100:100:100,fill][100px:100px:100px,fill][100px:100px:100px,fill][100px:100px:100px,fill][grow,grow]", "[fill][][][][][][grow][]"));
 		//test();
 		JButton btnDodajWierzchoki = new JButton("Dodaj wierzchołki");
 		btnDodajWierzchoki.addActionListener(new ActionListener() {
@@ -126,13 +124,18 @@ public class MainFrame extends JFrame {
 			}
 		});
 		
+		graf = new DirectedSparseGraph<Node, Edge>();
+		layout = new KKLayout<Node, Edge>(graf);
+		//layout = new SpringLayout<Node, Edge>(graf); 
+		//Layout<Node, Edge> staticLayout = new StaticLayout<Node, Edge>(graf, layout);
+		vv = new VisualizationViewer<Node, Edge> (layout, new Dimension(1, 1));
+		vv.setGraphMouse(new DefaultModalGraphMouse<Node, Edge>());
 		panel = new GraphZoomScrollPane(vv);
-		panel.setIgnoreRepaint(false);
-		panel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		//panel.setIgnoreRepaint(false);
+		//panel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		panel.setAutoscrolls(true);
 		vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller<Node>());
 		vv.getRenderer().getVertexLabelRenderer().setPosition(Position.CNTR);
-	
 		
 		contentPane.add(btnWierzchokiPocztkowekocowe, "cell 0 1 4 1");
 		contentPane.add(panel,"cell 4 0 1 8,grow");
@@ -225,11 +228,22 @@ public class MainFrame extends JFrame {
 				Node n1 = e.getFirst();
 				Node n2 = e.getSecond();
 				
-				if (path.contains(n1) && path.contains(n2)) {
-					return Color.GREEN;
-				} else {
-					return Color.BLACK;
+				boolean wasFirst = false;
+				for (Node n : path) {
+					if (!wasFirst) {
+						if (n.equals(n1)) {
+							wasFirst = true;
+						}
+					} else {
+						if (n.equals(n2)) {
+							return Color.GREEN;
+						} else if (!n.equals(n1)) {
+							wasFirst = false;
+						}
+					}
 				}
+				
+				return Color.BLACK;
 			}
 			
 		};
@@ -244,8 +258,7 @@ public class MainFrame extends JFrame {
 		WierzcholkiFrame wf = new WierzcholkiFrame(this);
 		wf.setModal(true);
 		wf.setVisible(true);
-		panel.doLayout();
-		panel.repaint();
+		repaintGraph();
 		
 	}
 
@@ -253,16 +266,17 @@ public class MainFrame extends JFrame {
 		KrawedzieFrame kf = new KrawedzieFrame(this);
 		kf.setModal(true);
 		kf.setVisible(true);
-		panel.doLayout();
-		panel.repaint();
-		
-		//panel.setVisible(true);
+		repaintGraph();
 	}
 	
 	void oznaczPoczatkoweKoncoweWierzcholki(){
 		PoczatkoweFrame pf = new PoczatkoweFrame(this);
 		pf.setVisible(true);
 		pf.setModal(true);				
+	}
+	
+	private void repaintGraph() {
+		vv.getModel().setGraphLayout(new KKLayout<Node, Edge>(graf));
 	}
 	
 	void test (){
@@ -326,4 +340,7 @@ public class MainFrame extends JFrame {
 		}
 	}
 
+}
+
+class RelaxingThread extends Thread {
 }

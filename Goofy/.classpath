@@ -16,7 +16,7 @@
 			<attribute name="javadoc_location" value="jar:platform:/resource/Goofy/lib/jung2-2_0_1-apidocs.zip!/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/jung-algorithms-2.0.1.jar">
+	<classpathentry kind="lib" path="lib/jung-algorithms-2.0.1.jar" sourcepath="lib/jung-algorithms-2.0.1-sources.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="jar:platform:/resource/Goofy/lib/jung2-2_0_1-apidocs.zip!/"/>
 		</attributes>
@@ -46,7 +46,7 @@
 			<attribute name="javadoc_location" value="jar:platform:/resource/Goofy/lib/jung2-2_0_1-apidocs.zip!/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/jung-samples-2.0.1.jar">
+	<classpathentry kind="lib" path="lib/jung-samples-2.0.1.jar" sourcepath="lib/jung-samples-2.0.1-sources.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="jar:platform:/resource/Goofy/lib/jung2-2_0_1-apidocs.zip!/"/>
 		</attributes>
