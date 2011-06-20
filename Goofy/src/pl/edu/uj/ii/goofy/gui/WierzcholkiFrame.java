@@ -25,6 +25,7 @@ import edu.uci.ics.jung.graph.DirectedSparseGraph;
 
 public class WierzcholkiFrame extends JDialog {
 
+	private static final long serialVersionUID = 3903319042410592352L;
 	private JPanel contentPane;
 	private JTextField textField;
 	private JList list;

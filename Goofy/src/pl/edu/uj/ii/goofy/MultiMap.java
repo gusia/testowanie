@@ -3,7 +3,6 @@ package pl.edu.uj.ii.goofy;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.LinkedList;
 
 public class MultiMap<K, V> {
 

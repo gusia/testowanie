@@ -24,6 +24,8 @@ import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.util.Pair;
 
 public class KrawedzieFrame extends JDialog {
+	
+	private static final long serialVersionUID = -7868444654237460753L;
 	private JPanel contentPane;
 	MainFrame mFrame;
 	DirectedSparseGraph<Node, Edge> graf;
@@ -173,6 +175,7 @@ public class KrawedzieFrame extends JDialog {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void usunKrawedz() {
 		try {
 			Pair<Node> el;
