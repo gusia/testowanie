@@ -37,7 +37,7 @@ public class DuPathsCoverage implements TestRequirementInt<Node, Edge> {
 					for (Node end : graph.getVertices()) {
 						int duDescriptionEndIndex = 0;
 						for (DuDescription duDescriptionEnd : end.getUsages()) {
-							if (duDescriptionEnd.getName() == duDescription.getName()) {
+							if (duDescriptionEnd.getName().equals(duDescription.getName())) {
 								if (begin != end && duDescriptionEnd.getType() == DuDescriptionType.Definition) {
 									break;
 								}

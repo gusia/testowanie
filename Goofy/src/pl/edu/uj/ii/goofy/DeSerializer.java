@@ -116,7 +116,7 @@ public class DeSerializer {
 			if (node.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
 				Element element = (Element) node;
 				if (element.getNodeName() == "dudesc") {
-					String name = element.getChildNodes().item(0).toString();
+					String name = element.getChildNodes().item(0).getNodeValue();
 					String typeName = element.getAttribute("type");
 					DuDescriptionType type = Enum.valueOf(
 							DuDescriptionType.class, typeName);

@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,9 +17,11 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
@@ -27,7 +30,9 @@ import net.miginfocom.swing.MigLayout;
 
 import org.apache.commons.collections15.Transformer;
 
+import pl.edu.uj.ii.goofy.DeSerializer;
 import pl.edu.uj.ii.goofy.MultiMap;
+import pl.edu.uj.ii.goofy.Serializer;
 import pl.edu.uj.ii.goofy.algorithm.Edge;
 import pl.edu.uj.ii.goofy.algorithm.Node;
 import pl.edu.uj.ii.goofy.algorithm.coverage.DuPathsCoverage;
@@ -410,11 +415,35 @@ public class MainFrame extends JFrame {
 		}
 	}
 
-	void wczytajGraf() {
-
+	void wczytajGraf() { 
+		JFileChooser fc = new JFileChooser();
+		if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+			File file = fc.getSelectedFile();
+			DeSerializer ds = new DeSerializer(file.getAbsolutePath());
+			try {
+				ds.load();
+				this.graf = ds.getGraph();
+				this.wierzcholkiPoczatkowe = ds.getStartNodes();
+				this.wierzcholkiKoncowe = ds.getEndNodes();
+				repaintGraph();
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(this, "Błąd");
+			}
+		}
+		
 	}
 
 	void zapiszGraf() {
+		JFileChooser fc = new JFileChooser();
+		if (fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+			File file = fc.getSelectedFile();
+			Serializer s = new Serializer(graf, wierzcholkiPoczatkowe, wierzcholkiKoncowe, file.getAbsolutePath());
+			try {
+				s.save();
+			} catch (Exception e) {
 
+				JOptionPane.showMessageDialog(this, "Błąd");
+			}
+		}
 	}
 }
