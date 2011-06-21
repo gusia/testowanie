@@ -31,6 +31,7 @@ import org.apache.commons.collections15.Transformer;
 import pl.edu.uj.ii.goofy.MultiMap;
 import pl.edu.uj.ii.goofy.algorithm.Edge;
 import pl.edu.uj.ii.goofy.algorithm.Node;
+import pl.edu.uj.ii.goofy.algorithm.coverage.DuPathsCoverage;
 import pl.edu.uj.ii.goofy.algorithm.coverage.EdgeCoverage;
 import pl.edu.uj.ii.goofy.algorithm.coverage.EdgePairCoverage;
 import pl.edu.uj.ii.goofy.algorithm.coverage.NodeCoverage;
@@ -64,6 +65,7 @@ public class MainFrame extends JFrame {
 	private JList list;
 	private JList list_1;
 	private JCheckBox chckbxNewCheckBox;
+	private MultiMap<LinkedList<Node>, LinkedList<Node>> pathsMap;
 	
 	
 	public List<Node> getWierzcholkiPoczatkowe() {
@@ -346,6 +348,7 @@ public class MainFrame extends JFrame {
 		((DefaultComboBoxModel)comboBox.getModel()).addElement("Krawędziowe");
 		((DefaultComboBoxModel)comboBox.getModel()).addElement("Par krawędzi");
 		((DefaultComboBoxModel)comboBox.getModel()).addElement("Ścieżki doskonałe");
+		((DefaultComboBoxModel)comboBox.getModel()).addElement("Du-ścieżki");
 	}
 	
 	void pokazWymaganiaISciezki(){
@@ -361,27 +364,29 @@ public class MainFrame extends JFrame {
 			testRequirement = new EdgePairCoverage<Node, Edge>(graf);
 		} else if (selectedItem == "Ścieżki doskonałe") {
 			testRequirement = new PrimePathsCoverage<Node, Edge>(graf);
+		} else if (selectedItem == "Du-ścieżki") {
+			testRequirement = new DuPathsCoverage(graf);
 		} else {
 			return;
 		}
 		
 		LinkedList<LinkedList<Node>> paths = testRequirement.getRequirement();
 
-		DefaultListModel model = (DefaultListModel)list.getModel();
-		model.clear();
+		DefaultListModel model_1 = (DefaultListModel)list.getModel();
+		model_1.clear();
 		for (LinkedList<Node> path : paths) {
-			model.addElement(path);
+			model_1.addElement(path);
 		}
 		
 		Touring touring = chckbxNewCheckBox.isSelected() ? Touring.SidetripsAndDetours : Touring.OnlyTouring;
 		TestPathGenerator<Node, Edge> gen = new TestPathGenerator<Node, Edge>(graf, wierzcholkiPoczatkowe, wierzcholkiKoncowe, touring);
 		gen.getAllPaths();
-		MultiMap<LinkedList<Node>, LinkedList<Node>> map = gen.reducePaths(paths);
-		
-		model = (DefaultListModel)list_1.getModel();
-		model.clear();
-		for (LinkedList<Node> path : map.keySet()) {
-			model.addElement(path);
+		pathsMap = gen.reducePaths(paths);
+				
+		model_1 = (DefaultListModel)list_1.getModel();
+		model_1.clear();
+		for (LinkedList<Node> path : pathsMap.keySet()) {
+			model_1.addElement(path);
 		}
 	}
 }
