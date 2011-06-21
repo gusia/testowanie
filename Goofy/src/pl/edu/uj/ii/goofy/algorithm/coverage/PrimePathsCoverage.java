@@ -22,8 +22,8 @@ public class PrimePathsCoverage<N, E> implements TestRequirementInt<N, E> {
 				
 		while (!edgePaths.isEmpty()) {
 			for (LinkedList<N> path : edgePaths) {
-				N first = path.get(0);
-				N last = path.get(path.size() - 1);
+				N first = path.getFirst();
+				N last = path.getLast();
 				Collection<N> successors = graph.getSuccessors(last);
 				
 				if (successors.size() == 0) {

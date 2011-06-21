@@ -1,96 +1,131 @@
 package pl.edu.uj.ii.goofy;
 
-import java.util.Hashtable;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 
 import pl.edu.uj.ii.goofy.algorithm.DuDescription;
 import pl.edu.uj.ii.goofy.algorithm.DuDescriptionType;
+import pl.edu.uj.ii.goofy.algorithm.Edge;
+import pl.edu.uj.ii.goofy.algorithm.Node;
 import pl.edu.uj.ii.goofy.algorithm.coverage.DuPathsCoverage;
+import pl.edu.uj.ii.goofy.algorithm.coverage.PrimePathsCoverage;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.Graph;
 
 public class TestDu {
 
+	private static Graph<Node, Edge> graph;
+	
 	public static void main(String[] args) {
-		Graph<String, Integer> graph = new DirectedSparseGraph<String, Integer>();
+		LinkedList<DuDescription> l = new LinkedList<DuDescription>();
+		l.add(new DuDescription("i", DuDescriptionType.Definition));
+		Node n1 = new Node((short)1, l);
+		LinkedList<Node> pat = new LinkedList<Node>();
+	pat.add(n1);
+		Collection<Node> path2 = Collections.unmodifiableCollection(pat);
 		
-		graph.addVertex("1");
-		graph.addVertex("2");
-		graph.addVertex("3");
-		graph.addVertex("4");
-		graph.addVertex("5");
-		graph.addVertex("6");
-		graph.addVertex("7");
-		graph.addVertex("8");
-		
-		graph.addEdge(0, "1", "2");
-		graph.addEdge(1, "2", "3");
-		graph.addEdge(2, "3", "4");
-		graph.addEdge(3, "3", "5");
-		graph.addEdge(4, "4", "3");
-		graph.addEdge(5, "3", "5");
-		graph.addEdge(6, "5", "6");
-		graph.addEdge(7, "6", "7");
-		graph.addEdge(8, "6", "8");
-		graph.addEdge(9, "7", "6");
-		
-		Hashtable<String, LinkedList<DuDescription>> nodes = new Hashtable<String, LinkedList<DuDescription>>();
-		DuDescription description;
+		graph = new DirectedSparseGraph<Node, Edge>();
+
 		LinkedList<DuDescription> list;
 		
 		list = new LinkedList<DuDescription>();
-		description = new DuDescription("numbers", DuDescriptionType.Definition);
-		description = new DuDescription("sum", DuDescriptionType.Definition);
-		description = new DuDescription("length", DuDescriptionType.Definition);
-		nodes.put("1", list);
+		list.add(new DuDescription("numbers", DuDescriptionType.Definition));
+		list.add(new DuDescription("sum", DuDescriptionType.Definition));
+		list.add(new DuDescription("length", DuDescriptionType.Definition));
+		addNode(1, list);
 		
 		list = new LinkedList<DuDescription>();
-		description = new DuDescription("i", DuDescriptionType.Definition);
-		nodes.put("2", list);
+		list.add(new DuDescription("i", DuDescriptionType.Definition));
+		addNode(2, list);
+		
+		addNode(3, new LinkedList<DuDescription>());
 		
 		list = new LinkedList<DuDescription>();
-		description = new DuDescription("i", DuDescriptionType.Definition);
-		description = new DuDescription("sum", DuDescriptionType.Definition);
-		description = new DuDescription("sum", DuDescriptionType.Usage);
-		description = new DuDescription("numbers", DuDescriptionType.Usage);
-		description = new DuDescription("i", DuDescriptionType.Usage);
-		nodes.put("4", list);
+		list.add(new DuDescription("i", DuDescriptionType.Usage));
+		list.add(new DuDescription("sum", DuDescriptionType.Usage));
+		list.add(new DuDescription("sum", DuDescriptionType.Definition));
+		list.add(new DuDescription("numbers", DuDescriptionType.Usage));
+		list.add(new DuDescription("i", DuDescriptionType.Definition));
+		addNode(4, list);
 		
 		list = new LinkedList<DuDescription>();
-		description = new DuDescription("med", DuDescriptionType.Definition);
-		description = new DuDescription("mead", DuDescriptionType.Definition);
-		description = new DuDescription("varsum", DuDescriptionType.Definition);
-		description = new DuDescription("i", DuDescriptionType.Definition);
-		description = new DuDescription("sum", DuDescriptionType.Usage);
-		description = new DuDescription("numbers", DuDescriptionType.Usage);
-		description = new DuDescription("length", DuDescriptionType.Usage);
-		nodes.put("5", list);
+		list.add(new DuDescription("med", DuDescriptionType.Definition));
+		list.add(new DuDescription("mean", DuDescriptionType.Definition));
+		list.add(new DuDescription("varsum", DuDescriptionType.Definition));
+		list.add(new DuDescription("i", DuDescriptionType.Definition));
+		list.add(new DuDescription("sum", DuDescriptionType.Usage));
+		list.add(new DuDescription("numbers", DuDescriptionType.Usage));
+		list.add(new DuDescription("length", DuDescriptionType.Usage));
+		addNode(5, list);
+		
+		addNode(6, new LinkedList<DuDescription>());
 		
 		list = new LinkedList<DuDescription>();
-		description = new DuDescription("varsum", DuDescriptionType.Definition);
-		description = new DuDescription("i", DuDescriptionType.Definition);
-		description = new DuDescription("varsum", DuDescriptionType.Usage);
-		description = new DuDescription("numbers", DuDescriptionType.Usage);
-		description = new DuDescription("i", DuDescriptionType.Usage);
-		description = new DuDescription("mean", DuDescriptionType.Usage);
-		nodes.put("7", list);
+		list.add(new DuDescription("varsum", DuDescriptionType.Usage));
+		list.add(new DuDescription("i", DuDescriptionType.Usage));
+		list.add(new DuDescription("varsum", DuDescriptionType.Definition));
+		list.add(new DuDescription("i", DuDescriptionType.Definition));
+		list.add(new DuDescription("numbers", DuDescriptionType.Usage));
+		list.add(new DuDescription("mean", DuDescriptionType.Usage));
+		addNode(7, list);
 		
 		list = new LinkedList<DuDescription>();
-		description = new DuDescription("var", DuDescriptionType.Definition);
-		description = new DuDescription("sd", DuDescriptionType.Definition);
-		description = new DuDescription("varsum", DuDescriptionType.Usage);
-		description = new DuDescription("length", DuDescriptionType.Usage);
-		description = new DuDescription("mean", DuDescriptionType.Usage);
-		description = new DuDescription("med", DuDescriptionType.Usage);
-		description = new DuDescription("var", DuDescriptionType.Usage);
-		description = new DuDescription("sd", DuDescriptionType.Usage);
-		nodes.put("8", list);
+		list.add(new DuDescription("var", DuDescriptionType.Definition));
+		list.add(new DuDescription("sd", DuDescriptionType.Definition));
+		list.add(new DuDescription("varsum", DuDescriptionType.Usage));
+		list.add(new DuDescription("length", DuDescriptionType.Usage));
+		list.add(new DuDescription("mean", DuDescriptionType.Usage));
+		list.add(new DuDescription("med", DuDescriptionType.Usage));
+		list.add(new DuDescription("var", DuDescriptionType.Usage));
+		list.add(new DuDescription("sd", DuDescriptionType.Usage));
+		addNode(8, list);	
 		
-		LinkedList<LinkedList<String>> paths = new DuPathsCoverage<String, Integer>(graph, nodes, new Hashtable<Integer, LinkedList<DuDescription>>()).getRequirement();
+		addEdge(1, 2);
+		addEdge(2, 3);
 		
-		for (LinkedList<String> path : paths) {
+		list = new LinkedList<DuDescription>();
+		list.add(new DuDescription("i", DuDescriptionType.Usage));
+		list.add(new DuDescription("length", DuDescriptionType.Usage));
+		addEdge(3, 4, list);
+		
+		list = new LinkedList<DuDescription>();
+		list.add(new DuDescription("i", DuDescriptionType.Usage));
+		list.add(new DuDescription("length", DuDescriptionType.Usage));
+		addEdge(3, 5, list);
+		
+		addEdge(4, 3);
+		addEdge(5, 6);
+		
+		list = new LinkedList<DuDescription>();
+		list.add(new DuDescription("i", DuDescriptionType.Usage));
+		list.add(new DuDescription("length", DuDescriptionType.Usage));
+		addEdge(6, 7, list);
+		
+		list = new LinkedList<DuDescription>();
+		list.add(new DuDescription("i", DuDescriptionType.Usage));
+		list.add(new DuDescription("length", DuDescriptionType.Usage));
+		addEdge(6, 8, list);
+		
+		addEdge(7, 6);
+		
+		LinkedList<LinkedList<Node>> paths = new DuPathsCoverage(graph).getRequirement();
+		
+		for (LinkedList<Node> path : paths) {
 			System.out.println(path);
 		}
+	}
+	
+	private static void addNode(int n, Collection<DuDescription> desc) {
+		graph.addVertex(new Node((short) n, desc));
+	}
+	
+	private static void addEdge(int a, int b) {
+		graph.addEdge(new Edge((short) a, (short) b), new Node((short)a), new Node((short)b));
+	}
+	
+	private static void addEdge(int a, int b, LinkedList<DuDescription> list) {
+		graph.addEdge(new Edge((short) a, (short) b, list), new Node((short)a), new Node((short)b));
 	}
 
 }
