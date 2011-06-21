@@ -16,14 +16,14 @@ import javax.swing.border.EmptyBorder;
 import net.miginfocom.swing.MigLayout;
 import pl.edu.uj.ii.goofy.algorithm.Edge;
 import pl.edu.uj.ii.goofy.algorithm.Node;
-import edu.uci.ics.jung.graph.DirectedSparseGraph;
+import edu.uci.ics.jung.graph.Graph;
 
 public class PoczatkoweFrame extends JDialog {
 	
 	private static final long serialVersionUID = 4826091876368449315L;
 	private JPanel contentPane;
 	MainFrame mFrame;
-	DirectedSparseGraph<Node, Edge> graf;
+	Graph<Node, Edge> graf;
 	private JList list_2;
 	private JList list_1;
 	private JList list;
