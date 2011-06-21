@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -235,6 +236,7 @@ public class MainFrame extends JFrame {
 				try {
 					selectPath((LinkedList<Node>) ((DefaultListModel) list_1
 							.getModel()).get(list_1.getSelectedIndex()));
+					showPokryte();
 				} catch (Exception ex) {
 				}
 			}
@@ -408,10 +410,19 @@ public class MainFrame extends JFrame {
 		gen.getAllPaths();
 		pathsMap = gen.reducePaths(paths);
 				
+		DefaultListModel model_3 = (DefaultListModel) list_2.getModel();
+		HashSet<LinkedList<Node>> niepokryte = new HashSet<LinkedList<Node>>(paths);
+		
 		model_1 = (DefaultListModel)list_1.getModel();
 		model_1.clear();
 		for (LinkedList<Node> path : pathsMap.keySet()) {
 			model_1.addElement(path);
+			niepokryte.removeAll(pathsMap.getValues(path));
+		}
+		
+		model_3.clear();
+		for (LinkedList<Node> path : niepokryte) {
+			model_3.addElement(path);
 		}
 	}
 
@@ -444,6 +455,23 @@ public class MainFrame extends JFrame {
 
 				JOptionPane.showMessageDialog(this, "Błąd");
 			}
+		}
+	}
+	
+	void showPokryte() {
+		DefaultListModel model_3 = (DefaultListModel) list_3.getModel();
+		
+		DefaultListModel model_1 = (DefaultListModel)list_1.getModel();
+		LinkedList<Node> path;
+		try {
+			path = (LinkedList<Node>) model_1.get(list_1.getSelectedIndex());
+		} catch (Exception e) {
+			return;
+		}
+		
+		model_3.clear();
+		for (LinkedList<Node> p : pathsMap.getValues(path)) {
+			model_3.addElement(p);
 		}
 	}
 }
