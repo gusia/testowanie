@@ -101,14 +101,15 @@ public class MainFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public MainFrame() {
+		setTitle("Grafy");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 881, 614);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		contentPane.setLayout(new MigLayout("", "[100:100:100,fill][100px:100px:100px,fill][100px:100px:100px,fill][100px:100px:100px,fill][grow,grow]", "[fill][][][][][][grow][]"));
+		contentPane.setLayout(new MigLayout("", "[100:100:100,grow,fill][104px:114.00px:104px,fill][100px:100px:100px,grow,fill][100px:100px:100px,fill][grow]", "[fill][][][][][][][grow][][][grow]"));
 		//test();
-		JButton btnDodajWierzchoki = new JButton("Dodaj wierzchołki");
+		JButton btnDodajWierzchoki = new JButton("Dodaj/usuń wierzchołki");
 		btnDodajWierzchoki.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				dodajWierzcholki();
@@ -138,9 +139,9 @@ public class MainFrame extends JFrame {
 		vv.getRenderer().getVertexLabelRenderer().setPosition(Position.CNTR);
 		
 		contentPane.add(btnWierzchokiPocztkowekocowe, "cell 0 1 4 1");
-		contentPane.add(panel,"cell 4 0 1 8,grow");
+		contentPane.add(panel,"cell 4 0 1 11,grow");
 
-		JButton btnDodajKrawdzie = new JButton("Dodaj krawędzie");
+		JButton btnDodajKrawdzie = new JButton("Dodaj/usuń krawędzie");
 		btnDodajKrawdzie.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				dodajKrawedzie();
@@ -148,11 +149,19 @@ public class MainFrame extends JFrame {
 		});
 		contentPane.add(btnDodajKrawdzie, "cell 0 2 4 1");
 		
+		JButton btnNewButton_1 = new JButton("Oznacz definicje i/lub użycia");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				oznaczDefinicjeUzycia();
+			}
+		});
+		contentPane.add(btnNewButton_1, "cell 0 3 4 1");
+		
 		JLabel lblNewLabel = new JLabel("Kryterium:");
-		contentPane.add(lblNewLabel, "cell 0 3,alignx trailing");
+		contentPane.add(lblNewLabel, "cell 0 4,alignx trailing");
 		
 		comboBox = new JComboBox();
-		contentPane.add(comboBox, "cell 1 3 2 1,growx");
+		contentPane.add(comboBox, "cell 1 4 2 1,growx");
 		comboBox.setModel(new DefaultComboBoxModel());
 		dodajDoComboBox();
 		
@@ -162,19 +171,19 @@ public class MainFrame extends JFrame {
 				pokazWymaganiaISciezki();
 			}
 		});
-		contentPane.add(btnNewButton, "cell 3 3,growx");
+		contentPane.add(btnNewButton, "cell 3 4,growx");
 		
 		chckbxNewCheckBox = new JCheckBox("ścieżki poboczne/objazdy");
-		contentPane.add(chckbxNewCheckBox, "cell 0 4 4 1");
+		contentPane.add(chckbxNewCheckBox, "cell 0 5 4 1");
 		
 		JLabel lblNewLabel_1 = new JLabel("Wymagania testowe:");
-		contentPane.add(lblNewLabel_1, "cell 0 5 2 1");
+		contentPane.add(lblNewLabel_1, "cell 0 6 2 1");
 		
 		JLabel lblNewLabel_2 = new JLabel("Ścieżki testowe:");
-		contentPane.add(lblNewLabel_2, "cell 2 5 2 1");
+		contentPane.add(lblNewLabel_2, "cell 2 6 2 1");
 		
 		JScrollPane scrollPane = new JScrollPane();
-		contentPane.add(scrollPane, "cell 0 6 2 1,grow");
+		contentPane.add(scrollPane, "cell 0 7 2 1,grow");
 		
 
 		list = new JList();
@@ -190,7 +199,7 @@ public class MainFrame extends JFrame {
 
 		scrollPane.setViewportView(list);
 		JScrollPane scrollPane_1 = new JScrollPane();
-		contentPane.add(scrollPane_1, "cell 2 6 2 1,grow");
+		contentPane.add(scrollPane_1, "cell 2 7 2 1,grow");
 		
 
 		list_1 = new JList();
@@ -204,6 +213,30 @@ public class MainFrame extends JFrame {
 		});
 		list_1.setModel(new DefaultListModel());
 		scrollPane_1.setViewportView(list_1);
+		
+		JLabel lblNewLabel_3 = new JLabel("Wymagania nie pokryte przez");
+		contentPane.add(lblNewLabel_3, "cell 0 8 2 1");
+		
+		JLabel lblNewLabel_4 = new JLabel("Wymagania pokryte przez ");
+		contentPane.add(lblNewLabel_4, "cell 2 8");
+		
+		JLabel lblNewLabel_5 = new JLabel("żadną ścieżkę testową:");
+		contentPane.add(lblNewLabel_5, "cell 0 9");
+		
+		JLabel lblNewLabel_6 = new JLabel("wybraną ścieżkę testową:");
+		contentPane.add(lblNewLabel_6, "cell 2 9 2 1");
+		
+		JScrollPane scrollPane_2 = new JScrollPane();
+		contentPane.add(scrollPane_2, "cell 0 10 2 1,grow");
+		
+		JList list_2 = new JList();
+		scrollPane_2.setViewportView(list_2);
+		
+		JScrollPane scrollPane_3 = new JScrollPane();
+		contentPane.add(scrollPane_3, "cell 2 10 2 1,grow");
+		
+		JList list_3 = new JList();
+		scrollPane_3.setViewportView(list_3);
 	}
 
 	void selectPath(final LinkedList<Node> path) {
@@ -271,8 +304,14 @@ public class MainFrame extends JFrame {
 	
 	void oznaczPoczatkoweKoncoweWierzcholki(){
 		PoczatkoweFrame pf = new PoczatkoweFrame(this);
+		pf.setModal(true);	
 		pf.setVisible(true);
-		pf.setModal(true);				
+	}
+	
+	void oznaczDefinicjeUzycia(){
+		DefinicjeUzyciaFrame duf = new DefinicjeUzyciaFrame(this);
+		duf.setModal(true);
+		duf.setVisible(true);
 	}
 	
 	private void repaintGraph() {
@@ -339,7 +378,6 @@ public class MainFrame extends JFrame {
 			model.addElement(path);
 		}
 	}
-
 }
 
 class RelaxingThread extends Thread {

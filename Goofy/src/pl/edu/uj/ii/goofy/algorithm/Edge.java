@@ -46,7 +46,7 @@ public class Edge {
 
 	@Override
 	public String toString() {
-		return Integer.toString(id);
+		return "<"+Integer.toString((id >> 16)) + ", " + Integer.toString(id & 0xffff)+">";
 	}
 	
 	private static synchronized int calcId(short first, short second) {

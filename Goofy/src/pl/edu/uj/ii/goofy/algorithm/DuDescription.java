@@ -16,4 +16,12 @@ public class DuDescription {
 	public DuDescriptionType getType() {
 		return type;
 	}
+	
+	public String toString() {
+		if (type == DuDescriptionType.Definition) {
+			return "d " + name;
+		} else  {
+			return "u " + name;
+		}
+	}
 }
